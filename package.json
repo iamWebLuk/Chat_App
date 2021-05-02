@@ -1,0 +1,28 @@
+{
+  "name": "chat_app",
+  "version": "1.0.0",
+  "description": "web service development project",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamWebLuk/Chat_App.git"
+  },
+  "keywords": [
+    "chat",
+    "app",
+    "websocket",
+    "socket",
+    "message",
+    "queue"
+  ],
+  "author": "David Riegler, Ulrike Ozim, Lukas Weber",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iamWebLuk/Chat_App/issues"
+  },
+  "homepage": "https://github.com/iamWebLuk/Chat_App#readme"
+}
