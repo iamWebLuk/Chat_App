@@ -3,7 +3,7 @@ const http = require("http").Server(app)
 const io = require("socket.io")(http)
 const amqp = require('amqplib/callback_api')
 
-const { RABBIT_HOST, QUEUE, EXCHANGE, SERVER_PORT } = require('./config')
+const { RABBIT_HOST, EXCHANGE, SERVER_PORT } = require('./config')
 
 
 consumeMessage();
@@ -54,11 +54,11 @@ function consumeMessage() {
 
             channel.assertExchange(EXCHANGE, 'fanout', { durable: false })
 
-            channel.assertQueue(QUEUE, { exclusive: false })
+            channel.assertQueue('', { exclusive: false })
 
-            channel.bindQueue(QUEUE, EXCHANGE, 'fanout')
+            channel.bindQueue('', EXCHANGE, 'fanout')
 
-            channel.consume(QUEUE, (message) => {
+            channel.consume('', (message) => {
                 message = JSON.parse(message.content)
                 console.log("Consumed: %s", message)
                 io.emit('chat message', message)
