@@ -3,7 +3,7 @@ const http = require("http").Server(app)
 const io = require("socket.io")(http)
 const amqp = require('amqplib/callback_api')
 
-const { RABBIT_HOST, EXCHANGE, SERVER_PORT } = require('./config')
+const { RABBIT_HOST, QUEUE, EXCHANGE, KEY, SERVER_PORT } = require('./config')
 
 
 consumeMessage();
@@ -34,9 +34,9 @@ function publishMessage(message) {
         connection.createChannel((channelError, channel) => {
             if (channelError) throw channelError
 
-            channel.assertExchange(EXCHANGE, 'fanout', { durable: false })
+            channel.assertExchange(EXCHANGE, 'direct', { durable: false })
 
-            channel.publish(EXCHANGE, '', Buffer.from(JSON.stringify(message))) //Routingkey?
+            channel.publish(EXCHANGE, KEY, Buffer.from(JSON.stringify(message))) 
 
             console.log("Sent: %s", JSON.stringify(message))
 
@@ -52,17 +52,16 @@ function consumeMessage() {
         connection.createChannel((channelError, channel) => {
             if (channelError) throw channelError
 
-            channel.assertExchange(EXCHANGE, 'fanout', { durable: false })
+            channel.assertExchange(EXCHANGE, 'direct', { durable: false })
 
-            channel.assertQueue('', { exclusive: false })
+            channel.assertQueue(QUEUE, { exclusive: true })
 
-            channel.bindQueue('', EXCHANGE, 'fanout')
+            channel.bindQueue(QUEUE, EXCHANGE, KEY)
 
-            channel.consume('', (message) => {
+            channel.consume(QUEUE, (message) => {
                 message = JSON.parse(message.content)
-                console.log("Consumed: %s", message)
+                console.log("Consumed: %s. Key: %s", message, KEY)
                 io.emit('chat message', message)
-
 
             }, { noAck: true })
         })
