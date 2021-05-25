@@ -6,7 +6,7 @@ const { auth } = require('express-openid-connect')
 var user;
 
 const { RABBIT_HOST, QUEUE, EXCHANGE, KEY, SERVER_PORT,
-        ISSUER_BASE_URL, CLIENT_ID, BASE_URL, SECRET } = require('./config')
+    ISSUER_BASE_URL, CLIENT_ID, BASE_URL, SECRET } = require('./config')
 
 app.use(
     auth({
@@ -20,6 +20,7 @@ app.use(
 
 app.get("/", (req, res) => {
     user = req.oidc.user.nickname
+    console.log("User connected: " + user)
     res.sendFile(__dirname + "/index.html")
 })
 
@@ -27,9 +28,10 @@ app.get("/", (req, res) => {
 io.on("connection", (socket) => {
     socket.on("chat message", message => {
         publishMessage(message)
-        console.log("Message: " + message + "From user: " + user)
+        console.log("Message: " + message + ". From user: " + user)
     })
 })
+
 
 
 http.listen(SERVER_PORT, () => {
@@ -49,9 +51,10 @@ function publishMessage(message) {
 
             channel.assertExchange(EXCHANGE, 'direct', { durable: false })
 
-            channel.publish(EXCHANGE, KEY, Buffer.from(JSON.stringify(message)))
+            var payload = { "user": user, "message": message };
+            channel.publish(EXCHANGE, KEY, Buffer.from(JSON.stringify(payload)))
 
-            console.log("Sent: " + JSON.stringify(message))
+            console.log("Sent: " + JSON.stringify(payload))
 
         })
     })
@@ -71,10 +74,13 @@ function consumeMessage() {
 
             channel.bindQueue(QUEUE, EXCHANGE, KEY)
 
-            channel.consume(QUEUE, (message) => {
-                message = JSON.parse(message.content)
-                console.log("Consumed: " + message + "Key: " + KEY)
-                io.emit('chat message', user + ": " + message)
+            channel.consume(QUEUE, (payload) => {
+                payload = JSON.parse(payload.content)
+                console.log("Consumed: " + JSON.stringify(payload) + ". Key: " + KEY)
+
+                if (payload.user != null) {
+                    io.emit('chat message', payload.user + ": " + payload.message)
+                }
 
             }, { noAck: true })
         })
@@ -82,6 +88,4 @@ function consumeMessage() {
 
 }
 
-
-
-
+module.exports = {app}
