@@ -19,6 +19,4 @@ module.exports = {
   CLIENT_ID,
   BASE_URL,
   SECRET
-
-
-};
+}
