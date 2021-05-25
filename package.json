@@ -4,7 +4,7 @@
   "description": "web service development project",
   "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node server.js"
   },
   "repository": {
@@ -30,5 +30,9 @@
     "express": "^4.17.1",
     "express-openid-connect": "^2.4.0",
     "socket.io": "^4.1.1"
+  },
+  "devDependencies": {
+    "jest": "^27.0.1",
+    "supertest": "^6.1.3"
   }
 }
