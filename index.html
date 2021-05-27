@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>Chat App</title>
     <style>
       body {
         margin: 0;
@@ -81,9 +81,9 @@
         }
       });
 
-      socket.on("message", (msg) => {
+      socket.on("message", (message) => {
         var item = document.createElement("li");
-        item.textContent = msg;
+        item.textContent = message;
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       });
