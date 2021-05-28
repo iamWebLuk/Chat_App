@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
   fs.promises
     .readFile(__dirname + "/index.html")
     .then((html) => {
-      user = req.oidc.user.nickname;
+      var user = req.oidc.user.nickname;
       console.log("User connected: " + user);
       return html.toString().replace("currentUser", JSON.stringify(user));
     })
