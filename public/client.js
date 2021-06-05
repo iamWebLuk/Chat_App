@@ -8,7 +8,6 @@ var input = document.getElementById("input");
 getUser()
   .then((data) => {
     socket.emit("new user", data.nickname);
-    input.value = "";
   })
   .catch((err) => {
     console.error(err);
