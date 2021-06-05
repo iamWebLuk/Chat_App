@@ -59,32 +59,7 @@
       <input id="input" autocomplete="off" /><button>Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-      var socket = io();
-
-      var messages = document.getElementById("messages");
-      var form = document.getElementById("form");
-      var input = document.getElementById("input");
-      var user = currentUser;
-
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (input.value) {
-          var payload = {
-            user: user,
-            message: input.value,
-          };
-          socket.emit("message", payload);
-          input.value = "";
-        }
-      });
-
-      socket.on("message", (message) => {
-        var item = document.createElement("li");
-        item.textContent = message;
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
-      });
-    </script>
+    <script src="./client.js" defer></script>
+    
   </body>
 </html>

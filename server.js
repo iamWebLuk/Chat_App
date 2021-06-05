@@ -1,15 +1,13 @@
 const app = require("express")();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
-const amqp = require("amqplib/callback_api");
+const express = require("express");
 const { auth } = require("express-openid-connect");
-const fs = require("fs");
+const { requiresAuth } = require("express-openid-connect");
+const { consumeMessage, publishMessage } = require("./amqp");
+const activeUsers = new Set();
 
 const {
-  RABBIT_HOST,
-  QUEUE,
-  EXCHANGE,
-  KEY,
   SERVER_PORT,
   ISSUER_BASE_URL,
   CLIENT_ID,
@@ -27,83 +25,46 @@ app.use(
   })
 );
 
-app.get("/", (req, res) => {
-  fs.promises
-    .readFile(__dirname + "/index.html")
-    .then((html) => {
-      var user = req.oidc.user.nickname;
-      console.log("User connected: " + user);
-      return html.toString().replace("currentUser", JSON.stringify(user));
-    })
-    .then((html) => res.send(html));
+app.use('/', express.static('public'));
+
+app.get("/profile", requiresAuth(), (req, res) => {
+  res.send(JSON.stringify(req.oidc.user));
 });
+
 
 io.on("connection", (socket) => {
   socket.on("message", (message) => {
     publishMessage(message);
-    console.log("Message: " + message);
+    console.log("Message: " + JSON.stringify(message));
+  });
+
+
+  socket.on("new user", (data) => {
+    const user = JSON.stringify(data);
+    socket.userId = user;
+    if (!activeUsers.has(user)) {
+      activeUsers.add(user);
+      io.emit("new user", "New User connected: " + user);
+    }
+  });
+
+  socket.on("disconnect", () => {
+    activeUsers.delete(socket.userId);
+    io.emit("user disconnected", socket.userId);
   });
 });
+
 
 http.listen(SERVER_PORT, () => {
   console.log("Server is running on Port: " + SERVER_PORT);
 });
 
-function publishMessage(payload) {
-  amqp.connect(`amqp://${RABBIT_HOST}`, (connectionError, connection) => {
-    if (connectionError) throw connectionError;
-
-    connection.createChannel((channelError, channel) => {
-      if (channelError) throw channelError;
-
-      channel.assertExchange(EXCHANGE, "direct", {
-        durable: false,
-      });
-
-      channel.publish(EXCHANGE, KEY, Buffer.from(JSON.stringify(payload)));
-
-      console.log("Sent: " + JSON.stringify(payload));
-    });
-  });
+function emitMessage(payload){
+  io.emit("message", payload.user + ": " + payload.message)
 }
 
-function consumeMessage() {
-  amqp.connect(`amqp://${RABBIT_HOST}`, (connectionError, connection) => {
-    if (connectionError) throw connectionError;
-
-    connection.createChannel((channelError, channel) => {
-      if (channelError) throw channelError;
-
-      channel.assertExchange(EXCHANGE, "direct", {
-        durable: false,
-      });
-
-      channel.assertQueue(QUEUE, {
-        exclusive: true,
-      });
-
-      channel.bindQueue(QUEUE, EXCHANGE, KEY);
-
-      channel.consume(
-        QUEUE,
-        (payload) => {
-          payload = JSON.parse(payload.content);
-          console.log("Consumed: " + JSON.stringify(payload) + ". Key: " + KEY);
-
-          if (payload.user != null) {
-            io.emit("message", payload.user + ": " + payload.message);
-          }
-        },
-        {
-          noAck: true,
-        }
-      );
-    });
-  });
-}
-
-consumeMessage();
+consumeMessage(emitMessage);
 
 module.exports = {
-  app,
+  app, io
 };
