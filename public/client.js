@@ -34,7 +34,6 @@ form.addEventListener("submit", (e) => {
 
 
 socket.on("message", (message) => {
-  console.log(socket.userId);
   postMessage(message);
 });
 
