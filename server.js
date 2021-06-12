@@ -48,9 +48,10 @@ io.on("connection", (socket) => {
     }
   });
 
+
   socket.on("disconnect", () => {
     activeUsers.delete(socket.userId);
-    io.emit("user disconnected", socket.userId);
+    io.emit("message", "User disconnected: " + socket.userId);
   });
 });
 
@@ -58,6 +59,7 @@ io.on("connection", (socket) => {
 http.listen(SERVER_PORT, () => {
   console.log("Server is running on Port: " + SERVER_PORT);
 });
+
 
 function emitMessage(payload){
   io.emit("message", payload.user + ": " + payload.message)

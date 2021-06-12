@@ -13,7 +13,6 @@ getUser()
     console.error(err);
   });
 
-
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   if (input.value) {
@@ -32,16 +31,13 @@ form.addEventListener("submit", (e) => {
   }
 });
 
-
 socket.on("message", (message) => {
   postMessage(message);
 });
 
-
 socket.on("new user", (data) => {
   postMessage(data);
 });
-
 
 function getUser() {
   return new Promise((resolve, reject) => {
