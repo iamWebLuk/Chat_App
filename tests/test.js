@@ -3,13 +3,6 @@ const request = require("supertest");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const Client = require("socket.io-client");
-const {
-  SERVER_PORT,
-  ISSUER_BASE_URL,
-  CLIENT_ID,
-  BASE_URL,
-  SECRET,
-} = require("../config");
 
 describe("test root path", () => {
   it("should respond GET", (done) => {
@@ -22,7 +15,7 @@ describe("test root path", () => {
   });
 });
 
-describe("my awesome project", () => {
+describe("basic connection test", () => {
   let io, serverSocket, clientSocket;
 
   beforeAll((done) => {
@@ -43,21 +36,11 @@ describe("my awesome project", () => {
     clientSocket.close();
   });
 
-  test("should work", (done) => {
-    clientSocket.on("hello", (arg) => {
-      expect(arg).toBe("world");
+  test("send message", (done) => {
+    clientSocket.on("hi", (arg) => {
+      expect(arg).toBe("check");
       done();
     });
-    serverSocket.emit("hello", "world");
-  });
-
-  test("should work (with ack)", (done) => {
-    serverSocket.on("hi", (cb) => {
-      cb("hola");
-    });
-    clientSocket.emit("hi", (arg) => {
-      expect(arg).toBe("hola");
-      done();
-    });
+    serverSocket.emit("hi", "check");
   });
 });
