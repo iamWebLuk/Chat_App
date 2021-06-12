@@ -1,9 +1,14 @@
-### ChatApp - A Group Project for the Course Web Service Development SS21
+## ChatApp - A Group Project for the Course Web Service Development SS21
 David Riegler-Ulrike Ozim-Lukas Weber
 
-### Installation
+### Installation/Run
+
 ```
 npm install
+```
+
+```
+npm start
 ```
 
 [RabbitMQ installation](https://www.rabbitmq.com/download.html)
@@ -19,8 +24,12 @@ All users get messages and notifications for other users joining or leaving the 
 
 ### Testing
 
+```
+npm test
+```
 The tests were taken from the [documentation](https://socket.io/docs/v4/testing/) of socket.io
 The tests provide only simple connection and message testing without the use of rabbitmq.
+For functional testing two different browsers can be used.
 
 ### RabbitMQ
 
