@@ -1,9 +1,32 @@
-# ChatApp
-# Web Service Development
+### ChatApp - A Group Project for the Course Web Service Development SS21
+David Riegler-Ulrike Ozim-Lukas Weber
 
-## 4th Semester FH Joanneum ##
+### Installation
+```
+npm install
+```
 
-# Group Project for the Course Web Service Development
-## David Riegler-Ulrike Ozim-Lukas Weber
+[RabbitMQ installation](https://www.rabbitmq.com/download.html)
 
-#### In this exercise we are programming a Chat App with Websocket Message Queuing and a Database
+### Description
+
+This application is a simple example for a chat program using express, socket.io, auth0 and rabbitmq
+
+The user can log in via a form provided by auth0.
+The user can send messages
+The user can use the route /logout to disconnect from the chat.
+All useres get messages and notifications for other users joining or leaving the chat.
+
+### Testing
+
+The tests were taken from the [documentation](https://socket.io/docs/v4/testing/) of socket.io
+The tests provide only simple connection and message testing without the use of rabbitmq
+
+### RabbitMQ
+
+The application uses Message Queuing for the communication between the users.
+The protocol is AMQP and the exchange type is direct for a simpler overview
+
+### Authorization
+
+The application uses openId-connect respectively [auth0](https://auth0.com/) for its user authorization
