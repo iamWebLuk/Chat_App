@@ -29,7 +29,7 @@ npm test
 ```
 The tests were taken from the [documentation](https://socket.io/docs/v4/testing/) of socket.io
 The tests provide only simple connection and message testing without the use of rabbitmq.
-For functional testing two different browsers can be used.
+For functional testing two different browsers or incognito mode can be used.
 
 ### RabbitMQ
 
