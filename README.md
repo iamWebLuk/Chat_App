@@ -15,7 +15,7 @@ npm start
 
 ### Description
 
-This application is a simple example for a chat program using express, socket.io, auth0 and rabbitmq
+This application is a simple example for a chat program using express, socket.io, auth0 and rabbitmq.
 
 The user can log in via a form provided by auth0.
 The user can send messages.
@@ -27,7 +27,7 @@ All users get messages and notifications for other users joining or leaving the 
 ```
 npm test
 ```
-The tests were taken from the [documentation](https://socket.io/docs/v4/testing/) of socket.io
+The tests were taken from the [documentation](https://socket.io/docs/v4/testing/) of socket.io.
 The tests provide only simple connection and message testing without the use of rabbitmq.
 For functional testing two different browsers or incognito mode can be used.
 
@@ -39,3 +39,5 @@ The protocol is AMQP and the exchange type is direct for a simpler overview.
 ### Authorization
 
 The application uses openId-connect respectively [auth0](https://auth0.com/) for its user authorization.
+A user can be created and Google or Github can be used to log in.
+Because this application is only for demonstration purposes and for ease of use the app runs over http.

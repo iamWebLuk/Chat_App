@@ -25,19 +25,17 @@ app.use(
   })
 );
 
-app.use('/', express.static('public'));
+app.use("/", express.static("public"));
 
 app.get("/profile", requiresAuth(), (req, res) => {
   res.send(JSON.stringify(req.oidc.user));
 });
-
 
 io.on("connection", (socket) => {
   socket.on("message", (message) => {
     publishMessage(message);
     console.log("Message: " + JSON.stringify(message));
   });
-
 
   socket.on("new user", (data) => {
     const user = JSON.stringify(data);
@@ -48,25 +46,22 @@ io.on("connection", (socket) => {
     }
   });
 
-
   socket.on("disconnect", () => {
     activeUsers.delete(socket.userId);
     io.emit("message", "User disconnected: " + socket.userId);
   });
 });
 
-
 http.listen(SERVER_PORT, () => {
   console.log("Server is running on Port: " + SERVER_PORT);
 });
 
-
-function emitMessage(payload){
-  io.emit("message", payload.user + ": " + payload.message)
+function emitMessage(payload) {
+  io.emit("message", payload.user + ": " + payload.message);
 }
 
 consumeMessage(emitMessage);
 
 module.exports = {
-  app, io
+  app,
 };

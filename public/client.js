@@ -4,7 +4,6 @@ var messages = document.getElementById("messages");
 var form = document.getElementById("form");
 var input = document.getElementById("input");
 
-
 getUser()
   .then((data) => {
     socket.emit("new user", data.nickname);
@@ -53,8 +52,8 @@ function getUser() {
 }
 
 function postMessage(message) {
-    var item = document.createElement("li");
-    item.textContent = message;
-    messages.appendChild(item);
-    window.scrollTo(0, document.body.scrollHeight);
-  }
+  var item = document.createElement("li");
+  item.textContent = message;
+  messages.appendChild(item);
+  window.scrollTo(0, document.body.scrollHeight);
+}
