@@ -62,9 +62,12 @@ For the authorization we used ejs instead of html files. ejs stands for Embedded
 e.g.
 Taken out of the login.ejs file
 
+```
 <% if (messages.error) { %>
   <%= messages.error %>
 <% } %>
+```
+
 
 Its an easy way to use Javascript inside your file. 
 
