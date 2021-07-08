@@ -1,5 +1,5 @@
 const amqp = require("amqplib/callback_api");
-const { RABBIT_HOST, QUEUE, EXCHANGE, KEY } = require("./config");
+const { RABBIT_HOST, QUEUE, EXCHANGE, KEY } = require("../config");
 
 function consumeMessage(emit) {
   amqp.connect(`amqp://${RABBIT_HOST}`, (connectionError, connection) => {
