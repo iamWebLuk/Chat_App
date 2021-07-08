@@ -68,7 +68,6 @@ function createApp(app) {
     } catch {
       res.redirect("/register");
     }
-    console.log(users);
   });
 
   app.delete("/logout", (req, res) => {

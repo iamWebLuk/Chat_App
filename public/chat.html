@@ -109,6 +109,10 @@
         });
       });
 
+      socket.on("message", (message) => {
+        postMessage(message);
+      });
+
       socket.on("newUser", (data) => {
         postMessage("New User connected: " + data.user);
       });
@@ -117,8 +121,9 @@
         postMessage("User disconnected: " + data.user);
       });
 
-      socket.on("message", (message) => {
-        postMessage(message);
+      socket.on("persistedMessages", (message) => {
+        console.log(message)
+        postMessage(message.user + ": " + message.message);
       });
 
       function getUser() {

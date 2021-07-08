@@ -1,11 +1,17 @@
 const app = require("express")();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
+
 const { consumeMessage, publishMessage } = require("./amqp");
 const { createApp } = require("./app");
-const activeUsers = new Set();
-const { SERVER_PORT} = require("../config");
+const {
+  createDbConnection,
+  getMessages,
+  messageModel,
+} = require("./db-connection");
+const { SERVER_PORT } = require("../config");
 
+const activeUsers = new Set();
 
 http.listen(SERVER_PORT, () => {
   console.log("Server is running on Port: " + SERVER_PORT);
@@ -13,12 +19,24 @@ http.listen(SERVER_PORT, () => {
 
 createApp(app);
 
+createDbConnection();
+
 io.on("connection", (socket) => {
   socket.on("joinRoom", (data) => {
     socket.join(data.room);
   });
 
   socket.on("message", (message) => {
+    messageModel({
+      message: message.message,
+      user: message.user,
+      room: message.room,
+      timestamp: Date.now(),
+    }).save((err) => {
+      if (err) throw err;
+      console.log("message saved");
+    });
+
     publishMessage(message);
     console.log("Message: " + JSON.stringify(message));
   });
@@ -45,11 +63,17 @@ io.on("connection", (socket) => {
     }
 
     emitUsers(data.room);
+
+    getMessages().then((messages) => {
+      messages.forEach((message) => {
+        io.to("Room1").to(socket.userId).emit("persistedMessages", message);
+      });
+    });
   });
 
   socket.on("disconnect", () => {
     let room = "";
-    
+
     activeUsers.forEach((user) => {
       if (user.user == socket.userId) {
         room = user.room;
