@@ -8,27 +8,20 @@ const passport = require("passport");
 const flash = require("express-flash");
 const session = require("express-session");
 const activeUsers = new Set();
-
 var regex = "^(?=.*[A-Za-z])(?=.*d)[A-Za-zd]{8,}$";
-
 const initializePassport = require("./passport-config");
+const bcrypt = require("bcrypt");
+const users = [];
+const { SERVER_PORT, SECRET } = require("./config");
+
 initializePassport(
   passport,
   (email) => users.find((user) => user.email === email),
   (id) => users.find((user) => user.id === id)
 );
-
-const bcrypt = require("bcrypt");
-const users = [];
-
-const {
-  SERVER_PORT,
-  ISSUER_BASE_URL,
-  CLIENT_ID,
-  BASE_URL,
-  SECRET,
-} = require("./config");
-
+http.listen(SERVER_PORT, () => {
+  console.log("Server is running on Port: " + SERVER_PORT);
+});
 
 app.set("view-engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
@@ -45,8 +38,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride("_method"));
 
-app.get("/", checkAuthenticated, (req, res) => {
-  res.sendFile(__dirname + "/public/");
+app.use("/chat", checkAuthenticated, express.static("public"));
+
+app.get("/", (req, res) => {
+  res.render("login.ejs");
 });
 
 app.get("/login", checkNotAuthentication, (req, res) => {
@@ -57,7 +52,7 @@ app.post(
   "/login",
   checkNotAuthentication,
   passport.authenticate("local", {
-    successRedirect: "/",
+    successRedirect: "/chat",
     failureRedirect: "/login",
     failureFlash: true,
   })
@@ -88,34 +83,69 @@ app.delete("/logout", (req, res) => {
   res.redirect("login");
 });
 
+app.get("/getUser", (req, res) => {
+  res.send(req.user);
+});
 
 io.on("connection", (socket) => {
+  socket.on("joinRoom", (data) => {
+    socket.join(data.room);
+  });
+
   socket.on("message", (message) => {
     publishMessage(message);
     console.log("Message: " + JSON.stringify(message));
   });
 
-  socket.on("new user", (data) => {
-    const user = JSON.stringify(data);
-    socket.userId = user;
-    if (!activeUsers.has(user)) {
+  socket.on("newUser", (data) => {
+    let isNewUser = true;
+    const user = {
+      user: data.user,
+      room: data.room,
+    };
+    socket.userId = user.user;
+
+    activeUsers.forEach((user) => {
+      if (user.user == socket.userId) {
+        isNewUser = false;
+        return;
+      }
+    });
+
+    if (isNewUser == true) {
       activeUsers.add(user);
-      io.emit("new user", "New User connected: " + user);
+
+      io.to(data.room).emit("newUser", user);
     }
+
+    emitUsers(data.room);
   });
 
   socket.on("disconnect", () => {
-    activeUsers.delete(socket.userId);
-    io.emit("message", "User disconnected: " + socket.userId);
+    let room = "";
+    
+    activeUsers.forEach((user) => {
+      if (user.user == socket.userId) {
+        room = user.room;
+        activeUsers.delete(user);
+
+        io.to(room).emit("removeUser", socket.userId);
+      }
+
+      emitUsers(room);
+    });
   });
 });
 
-http.listen(SERVER_PORT, () => {
-  console.log("Server is running on Port: " + SERVER_PORT);
-});
+function emitUsers(room) {
+  io.to(room).emit("roomUsers", {
+    room: room,
+    users: JSON.stringify(Array.from(activeUsers)),
+  });
+}
 
 function emitMessage(payload) {
-  io.emit("message", payload.user + ": " + payload.message);
+  io.to(payload.room).emit("message", payload.user + ": " + payload.message);
 }
 
 function checkAuthenticated(req, res, next) {
@@ -131,13 +161,6 @@ function checkNotAuthentication(req, res, next) {
   }
   next();
 }
-
-
-app.get("/getUser", (req, res) => {
-  res.send(req.user)
-  console.log(req.user)
-
-});
 
 consumeMessage(emitMessage);
 
