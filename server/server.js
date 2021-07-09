@@ -5,14 +5,7 @@ const { SERVER_PORT } = require("../config");
 const { consumeMessage, publishMessage } = require("./amqp");
 const { createApp } = require("../authentication/app");
 const { createDbConnection } = require("../database/db-connection");
-const {
-  userModel,
-  messageModel,
-  getUser,
-  getMessages,
-  createMessage
-} = require("../database/db-controller");
-
+const { getMessages, createMessage } = require("../database/db-controller");
 
 const activeUsers = new Set();
 
@@ -30,7 +23,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("message", (message) => {
-    createMessage(message)
+    createMessage(message);
     publishMessage(message);
     console.log("Message: " + JSON.stringify(message));
   });
@@ -58,11 +51,13 @@ io.on("connection", (socket) => {
 
     emitUsers(data.room);
 
-    getMessages().then((messages) => {
-      messages.forEach((message) => {
-        io.to("Room1").to(socket.userId).emit("persistedMessages", message);
-      });
-    });
+    getMessages(data.room)
+      .then((messages) => {
+        messages.forEach((message) => {
+          io.to("Room1").to(socket.userId).emit("persistedMessages", message);
+        });
+      })
+      .catch((error) => console.log(error));
   });
 
   socket.on("disconnect", () => {
