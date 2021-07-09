@@ -6,15 +6,32 @@ const bcrypt = require("bcrypt");
 const initializePassport = require("./passport-config");
 const passport = require("passport");
 const { SECRET } = require("../config");
+const { getUsers, createUser } = require("../database/db-controller");
 var regex = "^(?=.*[A-Za-z])(?=.*d)[A-Za-zd]{8,}$";
 const users = [];
 
 function createApp(app) {
-  initializePassport(
-    passport,
-    (email) => users.find((user) => user.email === email),
-    (id) => users.find((user) => user.id === id)
-  );
+
+  getUsers()
+    .then((usersInDatabase) => {
+      usersInDatabase.forEach((element) => {
+        users.push({
+          id: element.id,
+          name: element.name,
+          email: element.email,
+          password: element.password,
+        });
+      });
+      return users;
+    })
+    .then(() => {
+      console.log(users)
+      initializePassport(
+        passport,
+        (email) => users.find((user) => user.email === email),
+        (id) => users.find((user) => user.id === id)
+      );
+    });
 
   app.set("view-engine", "ejs");
   app.use(express.urlencoded({ extended: false }));
@@ -58,6 +75,12 @@ function createApp(app) {
   app.post("/register", checkNotAuthentication, async (req, res) => {
     try {
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      createUser({
+        name: req.body.name,
+        email: req.body.email,
+        password: hashedPassword,
+      });
+
       users.push({
         id: Date.now().toString(),
         name: req.body.name,
@@ -83,6 +106,7 @@ function createApp(app) {
     if (req.isAuthenticated()) {
       return next();
     }
+
     res.redirect("/login");
   }
 
@@ -93,6 +117,7 @@ function createApp(app) {
     next();
   }
 }
+
 module.exports = {
   createApp,
 };
