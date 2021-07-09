@@ -1,13 +1,51 @@
-## ChatApp - A Group Project for the Course Web Service Development SS21
+# ChatApp - A Group Project for the Course Web Service Development SS21
 David Riegler-Ulrike Ozim-Lukas Weber
+
+##Overview
+
+* Installation/Run
+* Description
+* Testing
+* RabbitMQ
+* Authorization
+* Database
+* Chatrooms
+
 
 ### Installation/Run
 
+Before you can start the programm you need some installations.
+
+You need Nodes, RabbitMQ, and MongoDB.
+
+[Node.js](https://nodejs.org/en/)
+[RabbitMQ](https://www.rabbitmq.com/download.html)
+[MongoDB](https://www.mongodb.com)
+
+You can install all the applications manuelly or via Node Package Manager(npm) in the terminal
+
+To check if Node is correct installed, type
+
 ```
-npm install
+node -v
 ```
 
-You also need some other npm installs.
+to check if Node Package Manager(npm) correct installed, type
+
+```
+npm -v
+```
+
+Get MongoDB via npm with:
+
+```
+npm i mongoose
+```
+
+To get RabbitMQ there are multiple ways depence on your system. 
+[Windows](https://www.rabbitmq.com/install-windows.html)
+[Mac (Homebrew)](https://www.rabbitmq.com/install-homebrew.html)
+[Linux](https://www.rabbitmq.com/install-debian.html)
 
 First get nodemon. This is a live server for node. Whenever you save any of your files, it automatically reloads your web project
 
@@ -15,15 +53,39 @@ First get nodemon. This is a live server for node. Whenever you save any of your
 npm i nodemon
 ```
 
-in the package.json file you have a script called "devStart"
+
+
+
+
+
+in the package.json file you have different scripts to start certain parts of the programm
+
 All what it does is to start the nodemon server. 
 
 Instead of starting your node server with npm start server.js just say:
 
-```
-npm run devStart
-```
 
+    ```
+    npm run start
+    ```
+    
+   Use this command to run the programm
+    
+    
+    ```
+    npm run dev
+    ```
+   
+   With this command you watch your javascript and html files and whenever something changes, it will gets automatically updated on your live server
+    
+    
+     ```
+    npm run test
+    ```
+
+  This command is to start the jtests
+  
+  
 This is all it should take to run the application.
 
 Make sure to take a look in the .env.template file. Do what the instruction says there
@@ -80,3 +142,27 @@ const hashedPassword = await bcrypt.hash(req.body.password, 10)
 ```
 
 All it takes is the module brcypt, which automatically hashes your password
+
+
+### Database
+
+The database we choosed was MongoDB. It is a NoSQL database but a documentoriented, which means that you can manage JSON files in it.
+
+To implement the node module in our project we had to implement it with
+
+```
+const mongoose = require("mongoose");
+```
+
+We used the database to store old messages, so when a user comes later to the party, he also gets the older messages
+
+
+## Chatrooms
+
+We have two different Chatrooms. Room1 and Room2 
+
+![Chatroom](/media/chatroom)
+
+Just select one of the two rooms and join your friends
+
+
