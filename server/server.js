@@ -1,15 +1,18 @@
 const app = require("express")();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
-
-const { consumeMessage, publishMessage } = require("./amqp");
-const { createApp } = require("./app");
-const {
-  createDbConnection,
-  getMessages,
-  messageModel,
-} = require("./db-connection");
 const { SERVER_PORT } = require("../config");
+const { consumeMessage, publishMessage } = require("./amqp");
+const { createApp } = require("../authentication/app");
+const { createDbConnection } = require("../database/db-connection");
+const {
+  userModel,
+  messageModel,
+  getUser,
+  getMessages,
+  createMessage
+} = require("../database/db-controller");
+
 
 const activeUsers = new Set();
 
@@ -27,16 +30,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("message", (message) => {
-    messageModel({
-      message: message.message,
-      user: message.user,
-      room: message.room,
-      timestamp: Date.now(),
-    }).save((err) => {
-      if (err) throw err;
-      console.log("message saved");
-    });
-
+    createMessage(message)
     publishMessage(message);
     console.log("Message: " + JSON.stringify(message));
   });

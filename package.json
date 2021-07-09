@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "start": "node ./server/server.js",
-    "dev": "nodemon --watch public --watch server -e js,html"
+    "dev": "nodemon --watch public --watch server --watch authentication --watch database -e js,html"
   },
   "repository": {
     "type": "git",
