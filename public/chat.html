@@ -51,10 +51,27 @@
       #messages > li:nth-child(odd) {
         background: #efefef;
       }
+      .messagesBox {
+        width: 90%;
+        height: 100%;
+        float: left;
+      }
+      .userBox {
+        width: 10%;
+        height: 100%;
+        float: right;
+      }
     </style>
   </head>
   <body>
-    <ul id="messages"></ul>
+    <div class="messagesBox">
+      <ul id="messages"></ul>
+    </div>
+    <div class="userBox">
+      <ul id="sidebar">
+        <p>Users Online:</p>
+      </ul>
+    </div>
     <form id="form" action="">
       <input id="input" autocomplete="off" /><button>Send</button>
     </form>
@@ -63,6 +80,7 @@
       var socket = io();
 
       var messages = document.getElementById("messages");
+      var sidenav = document.getElementById("sidebar");
       var form = document.getElementById("form");
       var input = document.getElementById("input");
 
@@ -104,26 +122,26 @@
       socket.on("roomUsers", ({ room, users }) => {
         Object.values(JSON.parse(users)).forEach((user) => {
           if (user.room == room) {
-            postMessage("User online: " + user.user);
+            appendListing(user.user, sidenav);
           }
         });
       });
 
       socket.on("message", (message) => {
-        postMessage(message);
+        appendListing(message, messages);
       });
 
       socket.on("newUser", (data) => {
-        postMessage("New User connected: " + data.user);
+        appendListing("New User connected: " + data.user, messages);
       });
 
       socket.on("removeUser", (data) => {
-        postMessage("User disconnected: " + data.user);
+        appendListing("User disconnected: " + data.user, messages);
       });
 
       socket.on("persistedMessages", (message) => {
-        console.log(message)
-        postMessage(message.user + ": " + message.message);
+        console.log(message);
+        appendListing(message.user + ": " + message.message, messages);
       });
 
       function getUser() {
@@ -139,10 +157,10 @@
         });
       }
 
-      function postMessage(message) {
+      function appendListing(line, region) {
         var item = document.createElement("li");
-        item.textContent = message;
-        messages.appendChild(item);
+        item.textContent = line;
+        region.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       }
     </script>

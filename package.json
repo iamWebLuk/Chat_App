@@ -2,11 +2,11 @@
   "name": "chat_app",
   "version": "1.0.0",
   "description": "web service development project",
-  "main": "index.html",
+  "main": "./server/server.js",
   "scripts": {
     "test": "jest",
     "start": "node ./server/server.js",
-    "devStart": "nodemon ./server/server.js"
+    "dev": "nodemon --watch public --watch server -e js,html"
   },
   "repository": {
     "type": "git",
