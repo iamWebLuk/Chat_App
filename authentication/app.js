@@ -8,6 +8,7 @@ const { SECRET } = require("../config");
 const { initializePassport } = require("./passport-config");
 const { getUsers, getUser, createUser } = require("../database/db-controller");
 const users = [];
+let firstLoad = true;
 
 function createApp(app) {
   getUsers()
@@ -49,11 +50,15 @@ function createApp(app) {
   app.use("/chat", checkIsAuthenticated, express.static("public"));
 
   app.get("/", (req, res) => {
-    res.render("login.ejs");
+    if (checkFirstLoad(res) == false) {
+      res.render("login.ejs");
+    }
   });
 
   app.get("/login", checkIsNotAuthenticated, (req, res) => {
-    res.render("login.ejs");
+    if (checkFirstLoad(res) == false) {
+      res.render("login.ejs");
+    }
   });
 
   app.post(
@@ -130,8 +135,18 @@ function createApp(app) {
     }
     next();
   }
-}
 
+  function checkFirstLoad(res) {
+    //This is very bad, only temporary fix because there is an Error: Unknown authentication strategy "local" when the login happens too fast after the server starts
+    //I think this is because passport is loaded before users are fetched from the db
+    if (firstLoad == true) {
+      firstLoad = false;
+      setTimeout(() => res.render("login.ejs"), 10000);
+    } else {
+      return false;
+    }
+  }
+}
 module.exports = {
   createApp,
 };

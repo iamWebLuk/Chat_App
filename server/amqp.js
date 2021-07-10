@@ -1,6 +1,24 @@
 const amqp = require("amqplib/callback_api");
 const { RABBIT_HOST, QUEUE, EXCHANGE, KEY } = require("../config");
 
+function publishMessage(payload) {
+  amqp.connect(`amqp://${RABBIT_HOST}`, (connectionError, connection) => {
+    if (connectionError) throw connectionError;
+
+    connection.createChannel((channelError, channel) => {
+      if (channelError) throw channelError;
+
+      channel.assertExchange(EXCHANGE, "direct", {
+        durable: false,
+      });
+
+      channel.publish(EXCHANGE, KEY, Buffer.from(JSON.stringify(payload)));
+
+      console.log("Sent: " + JSON.stringify(payload));
+    });
+  });
+}
+
 function consumeMessage(emit) {
   amqp.connect(`amqp://${RABBIT_HOST}`, (connectionError, connection) => {
     if (connectionError) throw connectionError;
@@ -32,24 +50,6 @@ function consumeMessage(emit) {
           noAck: true,
         }
       );
-    });
-  });
-}
-
-function publishMessage(payload) {
-  amqp.connect(`amqp://${RABBIT_HOST}`, (connectionError, connection) => {
-    if (connectionError) throw connectionError;
-
-    connection.createChannel((channelError, channel) => {
-      if (channelError) throw channelError;
-
-      channel.assertExchange(EXCHANGE, "direct", {
-        durable: false,
-      });
-
-      channel.publish(EXCHANGE, KEY, Buffer.from(JSON.stringify(payload)));
-
-      console.log("Sent: " + JSON.stringify(payload));
     });
   });
 }
