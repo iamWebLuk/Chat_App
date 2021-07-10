@@ -54,7 +54,7 @@ io.on("connection", (socket) => {
     getMessages(data.room)
       .then((messages) => {
         messages.forEach((message) => {
-          io.to("Room1").to(socket.userId).emit("persistedMessages", message);
+          io.to(data.room).to(socket.userId).emit("persistedMessages", message);
         });
       })
       .catch((error) => console.log(error));

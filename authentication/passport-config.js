@@ -11,10 +11,10 @@ function initializePassport(passport, getUserByEmail, getUserById) {
       if (await bcrypt.compare(password, user.password)) {
         return done(null, user);
       } else {
-        return done(null, false, { message: "wrong Password" });
+        return done(null, false, { message: "wrong password" });
       }
-    } catch (e) {
-      return done(e);
+    } catch (err) {
+      return done(err);
     }
   };
 
