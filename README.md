@@ -18,8 +18,8 @@ Before you can start the programm you need some installations.
 
 You need Nodes, RabbitMQ, and MongoDB.
 
-[Node.js](https://nodejs.org/en/)
-[RabbitMQ](https://www.rabbitmq.com/download.html)
+[Node.js](https://nodejs.org/en/) \
+[RabbitMQ](https://www.rabbitmq.com/download.html) \
 [MongoDB](https://www.mongodb.com)
 
 You can install all the applications manuelly or via Node Package Manager(npm) in the terminal
@@ -43,8 +43,9 @@ npm i mongoose
 ```
 
 To get RabbitMQ there are multiple ways depence on your system. 
-[Windows](https://www.rabbitmq.com/install-windows.html)
-[Mac (Homebrew)](https://www.rabbitmq.com/install-homebrew.html)
+ 
+[Windows](https://www.rabbitmq.com/install-windows.html) \
+[Mac (Homebrew)](https://www.rabbitmq.com/install-homebrew.html) \
 [Linux](https://www.rabbitmq.com/install-debian.html)
 
 First get nodemon. This is a live server for node. Whenever you save any of your files, it automatically reloads your web project
@@ -53,11 +54,6 @@ First get nodemon. This is a live server for node. Whenever you save any of your
 npm i nodemon
 ```
 
-
-
-
-
-
 in the package.json file you have different scripts to start certain parts of the programm
 
 All what it does is to start the nodemon server. 
@@ -65,41 +61,82 @@ All what it does is to start the nodemon server.
 Instead of starting your node server with npm start server.js just say:
 
 
-    ```
+   ```
     npm run start
-    ```
+   ```
     
    Use this command to run the programm
     
     
-    ```
-    npm run dev
-    ```
+   ```
+   npm run dev
+   ```
    
    With this command you watch your javascript and html files and whenever something changes, it will gets automatically updated on your live server
     
     
-     ```
-    npm run test
-    ```
+  ```
+  npm run test
+  ```
 
   This command is to start the jtests
-  
-  
-This is all it should take to run the application.
 
-Make sure to take a look in the .env.template file. Do what the instruction says there
-
-[RabbitMQ installation](https://www.rabbitmq.com/download.html)
 
 ### Description
 
-This application is a simple example for a chat program using express, socket.io, authorization and rabbitmq.
+This application is a simple example for a chat program using express, socket.io, authorization, database and rabbitmq.
 
 The user can log in via register the email and login with it.
+The user can go in one of two chat rooms.
 The user can send messages.
 The user can use the route /logout to disconnect from the chat.
 All users get messages and notifications for other users joining or leaving the chat.
+
+
+## Imports
+
+In our project there are a lot of imports. Here's a short explanation to every import for better understanding and why we added it \
+I will skip the imports we did from methods from other classes of this project \
+Flash is for rendering messages from the browser, for instance  to display when you entered a wrong password
+```
+const flash = require("express-flash");
+```
+This is a middleware function
+```
+const session = require("express-session");
+```
+methodOverride gives you PUT and DELETE at places where you normally shouldn't be allowed
+```
+const methodOverride = require("method-override");
+```
+Express is a minimalistic web framework from node
+```
+const express = require("express");
+```
+Bcrypt hash the password
+```
+const bcrypt = require("bcrypt");
+```
+Passport helps you at the authentication
+```
+const passport = require("passport");
+```
+Local password and username authentication
+```
+const LocalStrategy = require("passport-local").Strategy;
+```
+Import for the Mongo Database
+```
+const mongoose = require("mongoose");
+```
+The RabbitMQ middleware
+```
+const amqp = require("amqplib/callback_api");
+```
+The import for Socket.io
+```
+const io = require("socket.io")(http);
+```
 
 
 ### Testing
@@ -115,6 +152,8 @@ For functional testing two different browsers or incognito mode can be used.
 
 The application uses Message Queuing for the communication between the users.
 The protocol is AMQP and the exchange type is direct for a simpler overview.
+
+Whenever a user is writing a message, the message broker queues it into the message queue and then all the user in the same queue are getting the messages one by one 
 
 ### Authorization
 
@@ -163,6 +202,7 @@ We have two different Chatrooms. Room1 and Room2
 
 ![Chatroom](/media/chatroom)
 
-Just select one of the two rooms and join your friends
+Just select one of the two rooms and join your friends.
+Like we said before, you can see all the other chat messages
 
 
