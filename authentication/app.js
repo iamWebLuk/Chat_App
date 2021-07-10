@@ -71,26 +71,22 @@ function createApp(app) {
   });
 
   app.post("/register", checkIsNotAuthenticated, async (req, res) => {
-   
-      const userAlreadyExists = new Promise((resolve, reject) => {
-        getUser(req.body.name, req.body.email)
-          .then((userExists) => {
-            console.log("User or email already existent: " + userExists);
-            return userExists;
-          })
-          .then((userExists) => {
-            if (userExists) {
-              resolve(true);
-            }
-          })
-          .then(() => resolve(false))
-          .catch((err) => reject(err));
-      });
+    const userAlreadyExists = new Promise((resolve, reject) => {
+      getUser(req.body.name, req.body.email)
+        .then((userExists) => {
+          console.log("User or email already existent: " + userExists);
+          if (userExists) {
+            resolve(true);
+          }
+        })
+        .then(() => resolve(false))
+        .catch((err) => reject(err));
+    });
 
-      try {
-        if (userAlreadyExists){
-          throw new Error("User already exists")
-        }
+    try {
+      if (userAlreadyExists) {
+        throw new Error("User already exists");
+      }
 
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       createUser({
