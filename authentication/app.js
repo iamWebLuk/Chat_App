@@ -3,15 +3,13 @@ const session = require("express-session");
 const methodOverride = require("method-override");
 const express = require("express");
 const bcrypt = require("bcrypt");
-const initializePassport = require("./passport-config");
 const passport = require("passport");
 const { SECRET } = require("../config");
-const { getUsers, createUser } = require("../database/db-controller");
-var regex = "^(?=.*[A-Za-z])(?=.*d)[A-Za-zd]{8,}$";
+const { initializePassport } = require("./passport-config");
+const { getUsers, getUser, createUser } = require("../database/db-controller");
 const users = [];
 
 function createApp(app) {
-
   getUsers()
     .then((usersInDatabase) => {
       usersInDatabase.forEach((element) => {
@@ -25,13 +23,13 @@ function createApp(app) {
       return users;
     })
     .then(() => {
-      console.log(users)
       initializePassport(
         passport,
         (email) => users.find((user) => user.email === email),
         (id) => users.find((user) => user.id === id)
       );
-    });
+    })
+    .catch((err) => reject(err));
 
   app.set("view-engine", "ejs");
   app.use(express.urlencoded({ extended: false }));
@@ -48,19 +46,19 @@ function createApp(app) {
   app.use(passport.session());
   app.use(methodOverride("_method"));
 
-  app.use("/chat", checkAuthenticated, express.static("public"));
+  app.use("/chat", checkIsAuthenticated, express.static("public"));
 
   app.get("/", (req, res) => {
     res.render("login.ejs");
   });
 
-  app.get("/login", checkNotAuthentication, (req, res) => {
+  app.get("/login", checkIsNotAuthenticated, (req, res) => {
     res.render("login.ejs");
   });
 
   app.post(
     "/login",
-    checkNotAuthentication,
+    checkIsNotAuthenticated,
     passport.authenticate("local", {
       successRedirect: "/chat",
       failureRedirect: "/login",
@@ -68,12 +66,32 @@ function createApp(app) {
     })
   );
 
-  app.get("/register", checkNotAuthentication, (req, res) => {
+  app.get("/register", checkIsNotAuthenticated, (req, res) => {
     res.render("register.ejs");
   });
 
-  app.post("/register", checkNotAuthentication, async (req, res) => {
-    try {
+  app.post("/register", checkIsNotAuthenticated, async (req, res) => {
+   
+      const userAlreadyExists = new Promise((resolve, reject) => {
+        getUser(req.body.name, req.body.email)
+          .then((userExists) => {
+            console.log("User or email already existent: " + userExists);
+            return userExists;
+          })
+          .then((userExists) => {
+            if (userExists) {
+              resolve(true);
+            }
+          })
+          .then(() => resolve(false))
+          .catch((err) => reject(err));
+      });
+
+      try {
+        if (userAlreadyExists){
+          throw new Error("User already exists")
+        }
+
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       createUser({
         name: req.body.name,
@@ -102,7 +120,7 @@ function createApp(app) {
     res.send(req.user);
   });
 
-  function checkAuthenticated(req, res, next) {
+  function checkIsAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
       return next();
     }
@@ -110,7 +128,7 @@ function createApp(app) {
     res.redirect("/login");
   }
 
-  function checkNotAuthentication(req, res, next) {
+  function checkIsNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
       return res.redirect("/");
     }

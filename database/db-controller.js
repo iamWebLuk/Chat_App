@@ -9,7 +9,7 @@ function getMessages(room) {
         return data;
       })
       .then((data) => resolve(data))
-      .catch((err) => reject(err));
+      .catch((error) => console.log(error));
   });
 }
 
@@ -34,6 +34,28 @@ function getUsers() {
   });
 }
 
+function getUser(userName, userEmail) {
+  return new Promise((resolve, reject) => {
+    userModel
+      .find({ name: userName })
+      .then((users) => {
+        if (Object.entries(users).length) {
+          resolve(true);
+        }
+      })
+      .then(() => {
+        return userModel.find({ email: userEmail });
+      })
+      .then((users) => {
+        if (Object.entries(users).length) {
+          resolve(true);
+        }
+      })
+      .then(() => resolve(false))
+      .catch((err) => reject(err));
+  });
+}
+
 function createUser(user) {
   userModel({
     name: user.name,
@@ -51,6 +73,7 @@ var userModel = createUserModel(mongoose);
 module.exports = {
   userModel,
   messageModel,
+  getUser,
   getUsers,
   getMessages,
   createMessage,
