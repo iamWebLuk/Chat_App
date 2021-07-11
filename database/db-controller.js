@@ -1,5 +1,6 @@
 const { createMessageModel } = require("./models/message-model");
 const { createUserModel } = require("./models/user-model");
+const { createSwearwordModel } = require("./models/swearword-model");
 const { mongoose } = require("./db-connection");
 
 function getMessages(room) {
@@ -9,7 +10,7 @@ function getMessages(room) {
         return data;
       })
       .then((data) => resolve(data))
-      .catch((error) => console.log(error));
+      .catch((err) => reject(err));
   });
 }
 
@@ -67,15 +68,59 @@ function createUser(user) {
   });
 }
 
+function filterMessage(message) {
+  const filter = [];
+  var splitMessage = message.split(" ");
+
+  splitMessage.forEach((element) => {
+    filter.push(filterSwearword(element));
+  });
+
+  function filterSwearword(element) {
+    return new Promise((resolve, reject) => {
+      findSwearword(element)
+        .then((isSwearword) => {
+          if (isSwearword == true) {
+            resolve("*".repeat(element.length));
+          } else {
+            resolve(element);
+          }
+        })
+        .catch((err) => reject(err));
+    });
+  }
+
+  return Promise.all(filter).then((data) => {
+    return data.toString();
+  });
+}
+
+function findSwearword(element) {
+  return new Promise((resolve, reject) => {
+    swearwordModel
+      .find({ word: element })
+      .then((word) => {
+        if (Object.entries(word).length) {
+          resolve(true);
+        }
+      })
+      .then(() => resolve(false))
+      .catch((err) => reject(err));
+  });
+}
+
 var messageModel = createMessageModel(mongoose);
 var userModel = createUserModel(mongoose);
+var swearwordModel = createSwearwordModel(mongoose);
 
 module.exports = {
   userModel,
   messageModel,
+  swearwordModel,
   getUser,
   getUsers,
   getMessages,
   createMessage,
   createUser,
+  filterMessage,
 };

@@ -5,7 +5,11 @@ const { SERVER_PORT } = require("../config");
 const { consumeMessage, publishMessage } = require("./amqp");
 const { createApp } = require("../authentication/app");
 const { createDbConnection } = require("../database/db-connection");
-const { getMessages, createMessage } = require("../database/db-controller");
+const {
+  getMessages,
+  createMessage,
+  filterMessage,
+} = require("../database/db-controller");
 
 const activeUsers = new Set();
 
@@ -23,9 +27,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("message", (message) => {
-    createMessage(message);
-    publishMessage(message);
     console.log("Message: " + JSON.stringify(message));
+    filterMessage(message.message).then((filteredMessage) => {
+      message.message = filteredMessage
+      createMessage(message);
+      publishMessage(message);
+    });
   });
 
   socket.on("newUser", (data) => {
