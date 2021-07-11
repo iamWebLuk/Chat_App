@@ -77,7 +77,7 @@ function createApp(app) {
 
   app.post("/register", checkIsNotAuthenticated, (req, res) => {
     const userAlreadyExists = new Promise((resolve, reject) => {
-      getUser(req.body.name, req.body.email)
+      checkUserExists(req.body.name, req.body.email)
         .then((userExists) => {
           console.log("User or email already existent: " + userExists);
           if (userExists == true) {

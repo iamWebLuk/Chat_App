@@ -35,7 +35,7 @@ function getUsers() {
   });
 }
 
-function getUser(userName, userEmail) {
+function checkUserExists(userName, userEmail) {
   return new Promise((resolve, reject) => {
     userModel
       .find({ name: userName })
@@ -91,7 +91,7 @@ function filterMessage(message) {
   }
 
   return Promise.all(filter).then((data) => {
-    return data.toString();
+    return data.join(" ");
   });
 }
 
@@ -117,7 +117,7 @@ module.exports = {
   userModel,
   messageModel,
   swearwordModel,
-  getUser,
+  checkUserExists,
   getUsers,
   getMessages,
   createMessage,
