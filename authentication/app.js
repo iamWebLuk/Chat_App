@@ -8,7 +8,7 @@ const { SECRET } = require("../config");
 const { initializePassport } = require("./passport-config");
 const { getUsers, getUser, createUser } = require("../database/db-controller");
 const users = [];
-let firstLoad = true;
+let firstLoad = false;
 
 function createApp(app) {
   getUsers()
@@ -75,41 +75,41 @@ function createApp(app) {
     res.render("register.ejs");
   });
 
-  app.post("/register", checkIsNotAuthenticated, async (req, res) => {
+  app.post("/register", checkIsNotAuthenticated, (req, res) => {
     const userAlreadyExists = new Promise((resolve, reject) => {
       getUser(req.body.name, req.body.email)
         .then((userExists) => {
           console.log("User or email already existent: " + userExists);
-          if (userExists) {
+          if (userExists == true) {
             resolve(true);
+          } else {
+            resolve(false);
           }
         })
-        .then(() => resolve(false))
         .catch((err) => reject(err));
     });
 
-    try {
-      if (userAlreadyExists) {
-        throw new Error("User already exists");
+    userAlreadyExists.then((userAlreadyExists) => {
+      if (userAlreadyExists == true) {
+        res.redirect("/register");
+      } else {
+        checkPasswordAndHash(req.body.password).then((hashedPassword) => {
+          createUser({
+            name: req.body.name,
+            email: req.body.email,
+            password: hashedPassword,
+          });
+
+          users.push({
+            id: Date.now().toString(),
+            name: req.body.name,
+            email: req.body.email,
+            password: hashedPassword,
+          });
+          res.redirect("/login");
+        });
       }
-
-      const hashedPassword = await bcrypt.hash(req.body.password, 10);
-      createUser({
-        name: req.body.name,
-        email: req.body.email,
-        password: hashedPassword,
-      });
-
-      users.push({
-        id: Date.now().toString(),
-        name: req.body.name,
-        email: req.body.email,
-        password: hashedPassword,
-      });
-      res.redirect("/login");
-    } catch {
-      res.redirect("/register");
-    }
+    });
   });
 
   app.delete("/logout", (req, res) => {
@@ -134,6 +134,15 @@ function createApp(app) {
       return res.redirect("/");
     }
     next();
+  }
+
+  function checkPasswordAndHash(password) {
+    return new Promise((resolve, reject) => {
+      if (password.lenght > 20) {
+        reject("password too long");
+      }
+      resolve(bcrypt.hash(password, 10));
+    });
   }
 
   function checkFirstLoad(res) {
