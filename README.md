@@ -10,6 +10,7 @@ David Riegler-Ulrike Ozim-Lukas Weber
 * Authorization
 * Database
 * Chatrooms
+* Swearfilter
 
 
 ### Installation/Run
@@ -172,7 +173,10 @@ Taken out of the login.ejs file
 
 Its an easy way to use Javascript inside your file. 
 
-The user is only stored locally stored in an array on your memory and are the array gets cleaned everytime the files get changed and you save your changes. When you don't do anything with your code, the programm runs as long as you want.
+First we started to store our user only locally in an array on your memory and are the array gets cleaned everytime the files get changed and you save your changes. When you don't do anything with your code, the programm runs as long as you want.
+
+Then we implemented a database and saved all our users in the database.
+
 
 Also the password is getting hashed with this function.
 
@@ -206,3 +210,7 @@ Just select one of the two rooms and join your friends.
 Like we said before, you can see all the other chat messages
 
 
+## Swearfilter
+
+We implemented a filter for some adult words. Whenever you say one of this 9 bad words, it gets replaced by ****
+The blueprint gets implemented in the ```swearword-model.js```, the list of bad words is in the ```initialize-filter.js``` and the function in the ```db-controller.js```
