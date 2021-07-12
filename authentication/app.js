@@ -6,7 +6,12 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 const { SECRET } = require("../config");
 const { initializePassport } = require("./passport-config");
-const { getUsers, checkUserExists, createUser } = require("../database/db-controller");
+const {
+  getUsers,
+  checkUserExists,
+  createUser,
+  getMessages,
+} = require("../database/db-controller");
 const users = [];
 let firstLoad = false;
 
@@ -121,6 +126,10 @@ function createApp(app) {
     res.send(req.user);
   });
 
+  app.get("/getPersistedMessages", (req, res) => {
+    getMessages(req.query.room).then((messages) => res.send(messages));
+  });
+
   function checkIsAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
       return next();
@@ -147,7 +156,7 @@ function createApp(app) {
 
   function checkFirstLoad(res) {
     //This is very bad, only temporary fix because there is an Error: Unknown authentication strategy "local" when the login happens too fast after the server starts
-    //I think this is because passport is loaded before users are fetched from the db
+    //I think this is because passport is initialized before users are fetched from the db,
     if (firstLoad == true) {
       firstLoad = false;
       setTimeout(() => res.render("login.ejs"), 10000);

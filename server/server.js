@@ -5,11 +5,7 @@ const { SERVER_PORT } = require("../config");
 const { consumeMessage, publishMessage } = require("./amqp");
 const { createApp } = require("../authentication/app");
 const { createDbConnection } = require("../database/db-connection");
-const {
-  getMessages,
-  createMessage,
-  filterMessage,
-} = require("../database/db-controller");
+const { createMessage, filterMessage } = require("../database/db-controller");
 
 const activeUsers = new Set();
 
@@ -29,11 +25,13 @@ io.on("connection", (socket) => {
   socket.on("message", (message) => {
     console.log("Message: " + JSON.stringify(message));
     filterMessage(message.message).then((filteredMessage) => {
-      message.message = filteredMessage
+      message.message = filteredMessage;
       createMessage(message);
       publishMessage(message);
     });
   });
+
+  socket.on("getPersistedMessages", (data) => {});
 
   socket.on("newUser", (data) => {
     let isNewUser = true;
@@ -52,19 +50,9 @@ io.on("connection", (socket) => {
 
     if (isNewUser == true) {
       activeUsers.add(user);
-
       io.to(data.room).emit("newUser", user);
+      emitUsers(data.room);
     }
-
-    emitUsers(data.room);
-
-    getMessages(data.room)
-      .then((messages) => {
-        messages.forEach((message) => {
-          io.to(data.room).to(socket.userId).emit("persistedMessages", message);
-        });
-      })
-      .catch((error) => console.log(error));
   });
 
   socket.on("disconnect", () => {
