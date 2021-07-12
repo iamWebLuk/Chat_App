@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 const { SECRET } = require("../config");
 const { initializePassport } = require("./passport-config");
-const { getUsers, getUser, createUser } = require("../database/db-controller");
+const { getUsers, checkUserExists, createUser } = require("../database/db-controller");
 const users = [];
 let firstLoad = false;
 
