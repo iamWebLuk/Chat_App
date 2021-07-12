@@ -1,7 +1,7 @@
 # ChatApp - A Group Project for the Course Web Service Development SS21
 David Riegler-Ulrike Ozim-Lukas Weber
 
-##Overview
+## Overview
 
 * Installation/Run
 * Description
@@ -11,7 +11,7 @@ David Riegler-Ulrike Ozim-Lukas Weber
 * Database
 * Chatrooms
 * Swearfilter
-
+* Known Issues
 
 ### Installation/Run
 
@@ -186,6 +186,8 @@ const hashedPassword = await bcrypt.hash(req.body.password, 10)
 
 All it takes is the module brcypt, which automatically hashes your password
 
+To logout and get to the login screen, simply put /logout in the url after localhost:3000. 
+
 
 ### Database
 
@@ -214,3 +216,7 @@ Like we said before, you can see all the other chat messages
 
 We implemented a filter for some adult words. Whenever you say one of this 9 bad words, it gets replaced by ****
 The blueprint gets implemented in the ```swearword-model.js```, the list of bad words is in the ```initialize-filter.js``` and the function in the ```db-controller.js```
+
+## Known Issues
+
+A too fast login after starting the program can cause an error. This can be eliminated by refresh the page. If you refresh your page in the chat, the client gets a disconnect and get a new connect afterwards. We tried ```var socket = io({ reconnection: false });``` but it doesn't seems to work
