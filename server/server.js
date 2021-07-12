@@ -60,13 +60,14 @@ io.on("connection", (socket) => {
         room = user.room;
         activeUsers.delete(user);
         io.to(room).emit("removeUser", user);
-        emitUsers(room, socket.userId);
+        emitUsers(room, user);
       }
     });
   });
 });
 
 function emitUsers(room, user) {
+  //the documentation is ambivalent here. This sends to all users in the room except the current one.
   io.to(room)
     .to(user)
     .emit("roomUsers", {

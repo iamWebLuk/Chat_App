@@ -77,9 +77,7 @@ function createApp(app) {
 
   app.post(
     "/login",
-
     checkIsAuthenticated(false),
-
     passport.authenticate("local", {
       successRedirect: "/chat",
       failureRedirect: "/login",
