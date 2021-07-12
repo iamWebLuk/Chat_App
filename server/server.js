@@ -31,8 +31,6 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("getPersistedMessages", (data) => {});
-
   socket.on("newUser", (data) => {
     let isNewUser = true;
     const user = {
@@ -51,28 +49,25 @@ io.on("connection", (socket) => {
     if (isNewUser == true) {
       activeUsers.add(user);
       io.to(data.room).emit("newUser", user);
-      emitUsers(data.room);
+      emitUsers(data.room, user);
     }
   });
 
   socket.on("disconnect", () => {
     let room = "";
-
     activeUsers.forEach((user) => {
       if (user.user == socket.userId) {
         room = user.room;
         activeUsers.delete(user);
-
-        io.to(room).emit("removeUser", socket.userId);
+        io.to(room).emit("removeUser", user);
+        emitUsers(room, socket.userId);
       }
-
-      emitUsers(room);
     });
   });
 });
 
-function emitUsers(room) {
-  io.to(room).emit("roomUsers", {
+function emitUsers(room, user) {
+  io.to(room).to(user).emit("roomUsers", {
     room: room,
     users: JSON.stringify(Array.from(activeUsers)),
   });
