@@ -13,7 +13,6 @@ const {
   getMessages,
 } = require("../database/db-controller");
 const users = [];
-let firstLoad = false;
 
 function createApp(app) {
   getUsers()
@@ -52,23 +51,35 @@ function createApp(app) {
   app.use(passport.session());
   app.use(methodOverride("_method"));
 
-  app.use("/chat", checkIsAuthenticated, express.static("public"));
+  const checkIsAuthenticated = (check) => {
+    return (req, res, callback) => {
+      if (check == true && req.isAuthenticated() == false) {
+        return res.redirect("/login");
+      }
+
+      if (check == false && req.isAuthenticated() == true) {
+        return res.redirect("/chat");
+      }
+
+      callback();
+    };
+  };
+
+  app.use("/chat", checkIsAuthenticated(true), express.static("public"));
 
   app.get("/", (req, res) => {
-    if (checkFirstLoad(res) == false) {
-      res.render("login.ejs");
-    }
+    res.render("login.ejs");
   });
 
-  app.get("/login", checkIsNotAuthenticated, (req, res) => {
-    if (checkFirstLoad(res) == false) {
-      res.render("login.ejs");
-    }
+  app.get("/login", checkIsAuthenticated(false), (req, res) => {
+    res.render("login.ejs");
   });
 
   app.post(
     "/login",
-    checkIsNotAuthenticated,
+
+    checkIsAuthenticated(false),
+
     passport.authenticate("local", {
       successRedirect: "/chat",
       failureRedirect: "/login",
@@ -76,11 +87,11 @@ function createApp(app) {
     })
   );
 
-  app.get("/register", checkIsNotAuthenticated, (req, res) => {
+  app.get("/register", checkIsAuthenticated(false), (req, res) => {
     res.render("register.ejs");
   });
 
-  app.post("/register", checkIsNotAuthenticated, (req, res) => {
+  app.post("/register", checkIsAuthenticated(false), (req, res) => {
     const userAlreadyExists = new Promise((resolve, reject) => {
       checkUserExists(req.body.name, req.body.email)
         .then((userExists) => {
@@ -117,9 +128,9 @@ function createApp(app) {
     });
   });
 
-  app.delete("/logout", (req, res) => {
+  app.get("/logout", (req, res) => {
     req.logOut();
-    res.redirect("login");
+    res.redirect("/login");
   });
 
   app.get("/getUser", (req, res) => {
@@ -130,21 +141,6 @@ function createApp(app) {
     getMessages(req.query.room).then((messages) => res.send(messages));
   });
 
-  function checkIsAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-      return next();
-    }
-
-    res.redirect("/login");
-  }
-
-  function checkIsNotAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-      return res.redirect("/");
-    }
-    next();
-  }
-
   function checkPasswordAndHash(password) {
     return new Promise((resolve, reject) => {
       if (password.lenght > 20) {
@@ -152,17 +148,6 @@ function createApp(app) {
       }
       resolve(bcrypt.hash(password, 10));
     });
-  }
-
-  function checkFirstLoad(res) {
-    //This is very bad, only temporary fix because there is an Error: Unknown authentication strategy "local" when the login happens too fast after the server starts
-    //I think this is because passport is initialized before users are fetched from the db,
-    if (firstLoad == true) {
-      firstLoad = false;
-      setTimeout(() => res.render("login.ejs"), 10000);
-    } else {
-      return false;
-    }
   }
 }
 module.exports = {
