@@ -67,10 +67,12 @@ io.on("connection", (socket) => {
 });
 
 function emitUsers(room, user) {
-  io.to(room).to(user).emit("roomUsers", {
-    room: room,
-    users: JSON.stringify(Array.from(activeUsers)),
-  });
+  io.to(room)
+    .to(user)
+    .emit("roomUsers", {
+      room: room,
+      users: JSON.stringify(Array.from(activeUsers)),
+    });
 }
 
 function emitMessage(payload) {
