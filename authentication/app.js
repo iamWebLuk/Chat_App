@@ -67,7 +67,7 @@ function createApp(app) {
 
   app.use("/chat", checkIsAuthenticated(true), express.static("public"));
 
-  app.get("/", (req, res) => {
+  app.get("/", checkIsAuthenticated(false), (req, res) => {
     res.render("login.ejs");
   });
 
