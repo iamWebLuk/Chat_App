@@ -52,15 +52,8 @@ To get RabbitMQ there are multiple ways depence on your system.
 For Windows, I can recommend this video. It's  short and is on point. \
 [Windows Youtube](https://www.youtube.com/watch?v=V9DWKbalbWQ)
 
-First get nodemon. This is a live server for node. Whenever you save any of your files, it automatically reloads your web project
 
-```
-npm i nodemon
-```
-
-in the package.json file you have different scripts to start certain parts of the programm
-
-All what it does is to start the nodemon server. 
+In the package.json file you have different scripts to start certain parts of the programm
 
 Instead of starting your node server with npm start server.js just say:
 
