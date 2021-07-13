@@ -1,16 +1,18 @@
 # ChatApp - A Group Project for the Course Web Service Development SS21
 David Riegler-Ulrike Ozim-Lukas Weber
 
-##Overview
+## Overview
 
 * Installation/Run
 * Description
 * Testing
 * RabbitMQ
+* Websocket
 * Authorization
 * Database
 * Chatrooms
-
+* Swearfilter
+* Known Issues
 
 ### Installation/Run
 
@@ -48,15 +50,13 @@ To get RabbitMQ there are multiple ways depence on your system.
 [Mac (Homebrew)](https://www.rabbitmq.com/install-homebrew.html) \
 [Linux](https://www.rabbitmq.com/install-debian.html)
 
-First get nodemon. This is a live server for node. Whenever you save any of your files, it automatically reloads your web project
+For Windows, I can recommend this video. It's  short and is on point. \
+[Windows Youtube](https://www.youtube.com/watch?v=V9DWKbalbWQ)
 
-```
-npm i nodemon
-```
+To see if RabbitMQ is installed and running go to ```http://localhost:15672``` and ist should open a RabbitMQ Page. \
+When everything is correctly installed you are now ready to start the project.
 
-in the package.json file you have different scripts to start certain parts of the programm
-
-All what it does is to start the nodemon server. 
+In the package.json file you have different scripts to start certain parts of the programm
 
 Instead of starting your node server with npm start server.js just say:
 
@@ -64,22 +64,22 @@ Instead of starting your node server with npm start server.js just say:
    ```
     npm run start
    ```
-    
-   Use this command to run the programm
-    
-    
+
+With this command nodemon will observe your files and whenever something changes, it will gets automatically updated on your live server.
    ```
    npm run dev
    ```
    
-   With this command you watch your javascript and html files and whenever something changes, it will gets automatically updated on your live server
-    
-    
+This command is to start the jtests
   ```
   npm run test
   ```
 
-  This command is to start the jtests
+ 
+<br><br>
+Is everything done correctly you can use ```npm run start``` in the terminal and get this message:
+
+![Verbindung](/media/verbindung.png)
 
 
 ### Description
@@ -89,7 +89,7 @@ This application is a simple example for a chat program using express, socket.io
 The user can log in via register the email and login with it.
 The user can go in one of two chat rooms.
 The user can send messages.
-The user can use the route /logout to disconnect from the chat.
+The user can use the route ```/logout``` to disconnect from the chat.
 All users get messages and notifications for other users joining or leaving the chat.
 
 
@@ -151,9 +151,20 @@ For functional testing two different browsers or incognito mode can be used.
 ### RabbitMQ
 
 The application uses Message Queuing for the communication between the users.
+We decided to use this Message Broker because, it was part of our Course at the University and is state-of-the-art
 The protocol is AMQP and the exchange type is direct for a simpler overview.
 
-Whenever a user is writing a message, the message broker queues it into the message queue and then all the user in the same queue are getting the messages one by one 
+Whenever a user is writing a message(producer), the message broker queues it into the message queue and then all the user in the same queue (consumers) are getting the messages one by one 
+
+The Homepage of RabbitMQ has a good documentation about the functionality with graphics so take a look at it \
+[Documentation](https://www.rabbitmq.com/getstarted.html)
+
+
+### Websocket
+ 
+  In this project we used websocket for the Chat. Because websocket is used for a two-way connection between the client and the server(bi-directional). So client and Server can   send Messages beetwen each other. The connection will be open as long, as one of these two drops off. \
+ For this, we used the Javascript library Socket.io which is build for bi-directional communication between client and server.
+
 
 ### Authorization
 
@@ -172,7 +183,10 @@ Taken out of the login.ejs file
 
 Its an easy way to use Javascript inside your file. 
 
-The user is only stored locally stored in an array on your memory and are the array gets cleaned everytime the files get changed and you save your changes. When you don't do anything with your code, the programm runs as long as you want.
+First we started to store our user only locally in an array on your memory and are the array gets cleaned everytime the files get changed and you save your changes. When you don't do anything with your code, the programm runs as long as you want.
+
+Then we implemented a database and saved all our users in the database.
+
 
 Also the password is getting hashed with this function.
 
@@ -181,6 +195,8 @@ const hashedPassword = await bcrypt.hash(req.body.password, 10)
 ```
 
 All it takes is the module brcypt, which automatically hashes your password
+
+To logout and get to the login screen, simply put /logout in the url after localhost:3000. 
 
 
 ### Database
@@ -200,9 +216,20 @@ We used the database to store old messages, so when a user comes later to the pa
 
 We have two different Chatrooms. Room1 and Room2 
 
-![Chatroom](/media/chatroom)
+![Chatroom](/media/ChatRoom.png)
 
 Just select one of the two rooms and join your friends.
 Like we said before, you can see all the other chat messages
 
+To change the chatroom, change the URL from ```.../room=Room1``` to ```.../room=Room2```
+When you want to disconnect from the server, simply put /logout behind the localhost:300 ```http://localhost:3000/logout```
 
+
+## Swearfilter
+
+We implemented a filter for some adult words. Whenever you say one of this 9 bad words, it gets replaced by ****
+The blueprint gets implemented in the ```swearword-model.js```, the list of bad words is in the ```initialize-filter.js``` and the function in the ```db-controller.js```
+
+## Known Issues
+
+A too fast login after starting the program can cause an error. This can be eliminated by refresh the page. If you refresh your page in the chat, the client gets a disconnect and get a new connect afterwards. We tried ```var socket = io({ reconnection: false });``` but it doesn't seems to work
