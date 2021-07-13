@@ -79,7 +79,7 @@ This command is to start the jtests
 <br><br>
 Is everything done correctly you can use ```npm run start``` in the terminal and get this message:
 
-![Verbindung](verbindung.png)
+![Verbindung](/media/verbindung.png)
 
 
 ### Description
