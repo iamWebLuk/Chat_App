@@ -7,6 +7,7 @@ David Riegler-Ulrike Ozim-Lukas Weber
 * Description
 * Testing
 * RabbitMQ
+* Websocket
 * Authorization
 * Database
 * Chatrooms
@@ -52,6 +53,8 @@ To get RabbitMQ there are multiple ways depence on your system.
 For Windows, I can recommend this video. It's  short and is on point. \
 [Windows Youtube](https://www.youtube.com/watch?v=V9DWKbalbWQ)
 
+To see if RabbitMQ is installed and running go to ```http://localhost:15672``` and ist should open a RabbitMQ Page. \
+When everything is correctly installed you are now ready to start the project.
 
 In the package.json file you have different scripts to start certain parts of the programm
 
@@ -69,8 +72,7 @@ Instead of starting your node server with npm start server.js just say:
    npm run dev
    ```
    
-   With this command you watch your javascript and html files and whenever something changes, it will gets automatically updated on your live server
-    
+   With this command nodemon will observe your files and whenever something changes, it will gets automatically updated on your live server.
     
   ```
   npm run test
@@ -86,7 +88,7 @@ This application is a simple example for a chat program using express, socket.io
 The user can log in via register the email and login with it.
 The user can go in one of two chat rooms.
 The user can send messages.
-The user can use the route /logout to disconnect from the chat.
+The user can use the route ```/logout``` to disconnect from the chat.
 All users get messages and notifications for other users joining or leaving the chat.
 
 
@@ -151,10 +153,17 @@ The application uses Message Queuing for the communication between the users.
 We decided to use this Message Broker because, it was part of our Course at the University and is state-of-the-art
 The protocol is AMQP and the exchange type is direct for a simpler overview.
 
-Whenever a user is writing a message, the message broker queues it into the message queue and then all the user in the same queue are getting the messages one by one 
+Whenever a user is writing a message(producer), the message broker queues it into the message queue and then all the user in the same queue (consumers) are getting the messages one by one 
 
-The Homepage of RabbitMQ has a good documentation so take a look at it \
+The Homepage of RabbitMQ has a good documentation about the functionality with graphics so take a look at it \
 [Documentation](https://www.rabbitmq.com/getstarted.html)
+
+
+### Websocket
+ 
+  In this project we used websocket for the Chat. Because websocket is used for a two-way connection between the client and the server(bi-directional). So client and Server can   send Messages beetwen each other. The connection will be open as long, as one of these two drops off. \
+ For this, we used the Javascript library Socket.io which is build for bi-directional communication between client and server.
+
 
 ### Authorization
 
