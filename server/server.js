@@ -1,7 +1,7 @@
 const app = require("express")();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
-const { SERVER_PORT } = require("../config");
+const { SERVER_PORT } = require("../config/config");
 const { consumeMessage, publishMessage } = require("./amqp");
 const { createApp } = require("../authentication/app");
 const { createDbConnection } = require("../database/db-connection");

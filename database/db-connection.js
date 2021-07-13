@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { MONGODBCONNECTION } = require("../config");
+const { MONGODBCONNECTION } = require("../config/config");
 
 function createDbConnection() {
   mongoose.connect(MONGODBCONNECTION, {

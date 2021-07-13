@@ -4,7 +4,7 @@ const methodOverride = require("method-override");
 const express = require("express");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
-const { SECRET } = require("../config");
+const { SECRET } = require("../config/config");
 const { initializePassport } = require("./passport-config");
 const {
   getUsers,
