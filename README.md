@@ -49,6 +49,9 @@ To get RabbitMQ there are multiple ways depence on your system.
 [Mac (Homebrew)](https://www.rabbitmq.com/install-homebrew.html) \
 [Linux](https://www.rabbitmq.com/install-debian.html)
 
+For Windows, I can recommend this video. It's  short and is on point. \
+[Windows Youtube](https://www.youtube.com/watch?v=V9DWKbalbWQ)
+
 First get nodemon. This is a live server for node. Whenever you save any of your files, it automatically reloads your web project
 
 ```
@@ -152,9 +155,13 @@ For functional testing two different browsers or incognito mode can be used.
 ### RabbitMQ
 
 The application uses Message Queuing for the communication between the users.
+We decided to use this Message Broker because, it was part of our Course at the University and is state-of-the-art
 The protocol is AMQP and the exchange type is direct for a simpler overview.
 
 Whenever a user is writing a message, the message broker queues it into the message queue and then all the user in the same queue are getting the messages one by one 
+
+The Homepage of RabbitMQ has a good documentation so take a look at it \
+[Documentation](https://www.rabbitmq.com/getstarted.html)
 
 ### Authorization
 
@@ -210,6 +217,9 @@ We have two different Chatrooms. Room1 and Room2
 
 Just select one of the two rooms and join your friends.
 Like we said before, you can see all the other chat messages
+
+To change the chatroom, change the URL from \ ```.../room=Room1``` \ to \ ```.../room=Room2```
+When you want to disconnect from the server, simply put /logout behind the localhost:300 \ ```http://localhost:3000/logout```
 
 
 ## Swearfilter
