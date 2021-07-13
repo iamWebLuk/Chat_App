@@ -44,8 +44,8 @@ io.on("connection", (socket) => {
 
     if (isNewUser == true) {
       activeUsers.add(user);
-      io.to(data.room).emit("newUser", user);
-      emitUsers(data.room, user);
+      io.to(user.room).emit("newUser", user);
+      emitUsers(user.room);
     }
   });
 
@@ -56,16 +56,14 @@ io.on("connection", (socket) => {
         room = user.room;
         activeUsers.delete(user);
         io.to(room).emit("removeUser", user);
-        emitUsers(room, user);
+        emitUsers(room);
       }
     });
   });
 });
 
-function emitUsers(room, user) {
-  //the documentation is ambivalent here. This sends to all users in the room except the current one.
+function emitUsers(room) {
   io.to(room)
-    .to(user)
     .emit("roomUsers", {
       room: room,
       users: JSON.stringify(Array.from(activeUsers)),
