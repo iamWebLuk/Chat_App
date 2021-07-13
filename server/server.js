@@ -2,7 +2,7 @@ const app = require("express")();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const { SERVER_PORT } = require("../config/config");
-const { consumeMessage, publishMessage } = require("./amqp");
+const { consumeFilteredMessage, publishUnfilteredMessage ,consumeUnfilteredMessage} = require("./amqp");
 const { createApp } = require("../authentication/app");
 const { createDbConnection } = require("../database/db-connection");
 const { createMessage, filterMessage } = require("../database/db-controller");
@@ -24,11 +24,8 @@ io.on("connection", (socket) => {
 
   socket.on("message", (message) => {
     console.log("Message: " + JSON.stringify(message));
-    filterMessage(message.message).then((filteredMessage) => {
-      message.message = filteredMessage;
       createMessage(message);
-      publishMessage(message);
-    });
+      publishUnfilteredMessage(message);
   });
 
   socket.on("newUser", (data) => {
@@ -80,7 +77,8 @@ function emitMessage(payload) {
   io.to(payload.room).emit("message", payload.user + ": " + payload.message);
 }
 
-consumeMessage(emitMessage);
+consumeUnfilteredMessage();
+consumeFilteredMessage(emitMessage);
 
 module.exports = {
   app,
