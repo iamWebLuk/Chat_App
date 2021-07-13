@@ -5,6 +5,7 @@ David Riegler-Ulrike Ozim-Lukas Weber
 
 * Installation/Run
 * Description
+* Config Folder
 * Testing
 * RabbitMQ
 * Websocket
@@ -93,6 +94,12 @@ The user can use the route ```/logout``` to disconnect from the chat.
 All users get messages and notifications for other users joining or leaving the chat.
 
 
+## Config File
+
+There are some critical configurations that are never should be shown to the public and be in a repository, like as passwords, keys etc.. \
+Allways save the file local on your computer or laptop and put it manuell into it. The .gitignore file will handle it, that it won't get pushed into the github repo.
+When you clone our repository, create a folder called config and in this folder put the config file. 
+
 ## Imports
 
 In our project there are a lot of imports. Here's a short explanation to every import for better understanding and why we added it \
@@ -144,9 +151,13 @@ const io = require("socket.io")(http);
 ```
 npm test
 ```
+
+At first we had 
 The tests were taken from the [documentation](https://socket.io/docs/v4/testing/) of socket.io.
 The tests provide only simple connection and message testing without the use of rabbitmq.
 For functional testing two different browsers or incognito mode can be used.
+
+
 
 ### RabbitMQ
 
@@ -214,14 +225,18 @@ We used the database to store old messages, so when a user comes later to the pa
 
 ## Chatrooms
 
-We have two different Chatrooms. Room1 and Room2 
+We have some different Chatrooms. 
 
 ![Chatroom](/media/ChatRoom.png)
 
 Just select one of the two rooms and join your friends.
 Like we said before, you can see all the other chat messages
 
-To change the chatroom, change the URL from ```.../room=Room1``` to ```.../room=Room2```
+After the login you come to a new window, where you can set your own chatroom.
+![chooseRoom.png](chooseRoom.png)
+
+When you accidental choose the wrong room, you can easily change room via URL.
+To change the chatroom via URL, change ```.../room=X``` to ```.../room=Y``` The X and Y in this example is a number or a word e.g. You want to switch from room 5 to room panda change ```room=5``` to  ```room=panda```
 When you want to disconnect from the server, simply put /logout behind the localhost:300 ```http://localhost:3000/logout```
 
 
