@@ -88,7 +88,8 @@ Is everything done correctly you can use ```npm run start``` in the terminal and
 This application is a simple example for a chat program using express, socket.io, authorization, database and rabbitmq.
 
 The user can log in via register the email and login with it.
-The user can go in one of two chat rooms.
+The user can set or join a room.
+The user can see older messages from this room.
 The user can send messages.
 The user can use the route ```/logout``` to disconnect from the chat.
 All users get messages and notifications for other users joining or leaving the chat.
@@ -152,11 +153,13 @@ const io = require("socket.io")(http);
 npm test
 ```
 
-At first we had 
-The tests were taken from the [documentation](https://socket.io/docs/v4/testing/) of socket.io.
+The tests were written with jtest.
+
+At first we had some standard tests from socket.io [documentation](https://socket.io/docs/v4/testing/).
 The tests provide only simple connection and message testing without the use of rabbitmq.
 For functional testing two different browsers or incognito mode can be used.
 
+Then we started to write our own tests, but hadn't enough time to do this well. This isn't and shouldn't be never an excuse, because testing is a major part of software engineering. Some of our tests include the login, register, logout and so on. If we had more time, we could have done better or more tests.
 
 
 ### RabbitMQ
@@ -173,7 +176,7 @@ The Homepage of RabbitMQ has a good documentation about the functionality with g
 
 ### Websocket
  
-  In this project we used websocket for the Chat. Because websocket is used for a two-way connection between the client and the server(bi-directional). So client and Server can   send Messages beetwen each other. The connection will be open as long, as one of these two drops off. \
+  In this project we used websocket for the Chat. Because websocket is used for a two-way connection between the client and the server(bi-directional). So client and Server can send Messages beetwen each other. The connection will be open as long, as one of these two drops off. \
  For this, we used the Javascript library Socket.io which is build for bi-directional communication between client and server.
 
 
