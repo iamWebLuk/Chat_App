@@ -64,21 +64,22 @@ Instead of starting your node server with npm start server.js just say:
    ```
     npm run start
    ```
-    
-   Use this command to run the programm
-    
-    
+
+With this command nodemon will observe your files and whenever something changes, it will gets automatically updated on your live server.
    ```
    npm run dev
    ```
    
-   With this command nodemon will observe your files and whenever something changes, it will gets automatically updated on your live server.
-    
+This command is to start the jtests
   ```
   npm run test
   ```
 
-  This command is to start the jtests
+ 
+<br><br>
+Is everything done correctly you can use ```npm run start``` in the terminal and get this message:
+
+![Verbindung](verbindung.png)
 
 
 ### Description
