@@ -6,12 +6,7 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 const { SECRET } = require("../config/config");
 const { initializePassport } = require("./passport-config");
-const {
-  getUsers,
-  checkUserExists,
-  createUser,
-  getMessages,
-} = require("../database/db-controller");
+const { getUsers, checkUserExists, createUser, getMessages } = require("../database/db-controller");
 const users = [];
 
 function createApp(app) {
@@ -147,6 +142,8 @@ function createApp(app) {
       resolve(bcrypt.hash(password, 10));
     });
   }
+
+  return app;
 }
 module.exports = {
   createApp,
