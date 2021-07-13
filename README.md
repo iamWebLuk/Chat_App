@@ -213,13 +213,13 @@ We used the database to store old messages, so when a user comes later to the pa
 
 We have two different Chatrooms. Room1 and Room2 
 
-![Chatroom](/media/chatroom)
+![Chatroom](/media/ChatRoom.png)
 
 Just select one of the two rooms and join your friends.
 Like we said before, you can see all the other chat messages
 
-To change the chatroom, change the URL from \ ```.../room=Room1``` \ to \ ```.../room=Room2```
-When you want to disconnect from the server, simply put /logout behind the localhost:300 \ ```http://localhost:3000/logout```
+To change the chatroom, change the URL from ```.../room=Room1``` to ```.../room=Room2```
+When you want to disconnect from the server, simply put /logout behind the localhost:300 ```http://localhost:3000/logout```
 
 
 ## Swearfilter
