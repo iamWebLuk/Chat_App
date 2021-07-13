@@ -24,7 +24,6 @@ io.on("connection", (socket) => {
 
   socket.on("message", (message) => {
     console.log("Message: " + JSON.stringify(message));
-    createMessage(message);
     publishUnfilteredMessage(message);
   });
 
@@ -74,6 +73,7 @@ function emitUsers(room, user) {
 }
 
 function emitMessage(payload) {
+  createMessage(payload);
   io.to(payload.room).emit("message", payload.user + ": " + payload.message);
 }
 

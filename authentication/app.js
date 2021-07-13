@@ -6,7 +6,12 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 const { SECRET } = require("../config/config");
 const { initializePassport } = require("./passport-config");
-const { getUsers, checkUserExists, createUser, getMessages } = require("../database/db-controller");
+const {
+  getUsers,
+  checkUserExists,
+  createUser,
+  getMessages,
+} = require("../database/db-controller");
 const users = [];
 
 function createApp(app) {
@@ -103,18 +108,14 @@ function createApp(app) {
         res.redirect("/register");
       } else {
         checkPasswordAndHash(req.body.password).then((hashedPassword) => {
-          createUser({
+          user = {
             name: req.body.name,
             email: req.body.email,
             password: hashedPassword,
-          });
-
-          users.push({
-            id: Date.now().toString(),
-            name: req.body.name,
-            email: req.body.email,
-            password: hashedPassword,
-          });
+          };
+          createUser(user);
+          user.id = Date.now().toString(),
+          users.push(user);
           res.redirect("/login");
         });
       }
