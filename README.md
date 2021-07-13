@@ -225,18 +225,13 @@ We used the database to store old messages, so when a user comes later to the pa
 
 ## Chatrooms
 
-We have some different Chatrooms. 
-
-![Chatroom](/media/ChatRoom.png)
-
-Just select one of the two rooms and join your friends.
-Like we said before, you can see all the other chat messages
-
 After the login you come to a new window, where you can set your own chatroom.
-![chooseRoom.png](chooseRoom.png)
+
+![chooseRoom.png](/media/chooseRoom.png)
 
 When you accidental choose the wrong room, you can easily change room via URL.
-To change the chatroom via URL, change ```.../room=X``` to ```.../room=Y``` The X and Y in this example is a number or a word e.g. You want to switch from room 5 to room panda change ```room=5``` to  ```room=panda```
+To change the chatroom via URL, change ```.../room=X``` to ```.../room=Y``` The X and Y in this example is a number or a word e.g. You want to switch from room 5 to room panda change ```room=5``` to  ```room=panda``` \
+Like we said before, you can see all the older chat messages in a room, when other people already have written something in this chat. \
 When you want to disconnect from the server, simply put /logout behind the localhost:300 ```http://localhost:3000/logout```
 
 
