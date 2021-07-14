@@ -51,13 +51,13 @@ function createApp(app, disconnectUser) {
   app.use(passport.session());
   app.use(methodOverride("_method"));
 
-  const checkIsAuthenticated = (check) => {
+  const checkIsAuthenticated = (redirectToLogin) => {
     return (req, res, callback) => {
-      if (check == true && req.isAuthenticated() == false) {
+      if (redirectToLogin == true && req.isAuthenticated() == false) {
         return res.redirect("/login");
       }
 
-      if (check == false && req.isAuthenticated() == true) {
+      if (redirectToLogin == false && req.isAuthenticated() == true) {
         return res.redirect("/chat");
       }
 
