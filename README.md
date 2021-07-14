@@ -55,6 +55,9 @@ For Windows, I can recommend this video. It's  short and is on point. \
 [Windows Youtube](https://www.youtube.com/watch?v=V9DWKbalbWQ)
 
 To see if RabbitMQ is installed and running go to ```http://localhost:15672``` and ist should open a RabbitMQ Page. \
+
+As last step ```create a folder called config and in this folder put the config file```, you've got.
+
 When everything is correctly installed you are now ready to start the project.
 
 In the package.json file you have different scripts to start certain parts of the programm
@@ -76,8 +79,10 @@ This command is to start the jtests
   npm run test
   ```
 
+
  
 <br><br>
+
 Is everything done correctly you can use ```npm run start``` in the terminal and get this message:
 
 ![Verbindung](/media/verbindung.png)
@@ -86,6 +91,7 @@ Is everything done correctly you can use ```npm run start``` in the terminal and
 ### Description
 
 This application is a simple example for a chat program using express, socket.io, authorization, database and rabbitmq.
+Our project is running on ```localhost:3000```
 
 The user can log in via register the email and login with it.
 The user can set or join a room.
@@ -166,7 +172,10 @@ Then we started to write our own tests, but hadn't enough time to do this well. 
 
 The application uses Message Queuing for the communication between the users.
 We decided to use this Message Broker because, it was part of our Course at the University and is state-of-the-art
-The protocol is AMQP and the exchange type is direct for a simpler overview.
+The protocol is AMQP and we used an exchange that serve two queues with messages. The first queue is for filtered messages
+and the second for unfiltered messages.
+
+![MQ](/media/mq.png)
 
 Whenever a user is writing a message(producer), the message broker queues it into the message queue and then all the user in the same queue (consumers) are getting the messages one by one 
 
@@ -223,7 +232,8 @@ To implement the node module in our project we had to implement it with
 const mongoose = require("mongoose");
 ```
 
-We used the database to store old messages, so when a user comes later to the party, he also gets the older messages
+We used the database to store three type of data. Old messages, the registrated users and all the swear words. Maybe you wonder why we store old messages.
+We store them so when a user comes later to the party, he will also gets the older messages and can read them
 
 
 ## Chatrooms
