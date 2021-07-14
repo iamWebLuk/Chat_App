@@ -172,7 +172,10 @@ Then we started to write our own tests, but hadn't enough time to do this well. 
 
 The application uses Message Queuing for the communication between the users.
 We decided to use this Message Broker because, it was part of our Course at the University and is state-of-the-art
-The protocol is AMQP and the exchange type is direct for a simpler overview.
+The protocol is AMQP and we used an exchange that serve two queues with messages. The first queue is for filtered messages
+and the second for unfiltered messages.
+
+![MQ](mq.png)
 
 Whenever a user is writing a message(producer), the message broker queues it into the message queue and then all the user in the same queue (consumers) are getting the messages one by one 
 
@@ -229,7 +232,8 @@ To implement the node module in our project we had to implement it with
 const mongoose = require("mongoose");
 ```
 
-We used the database to store old messages, so when a user comes later to the party, he also gets the older messages
+We used the database to store three type of data. Old messages, the registrated users and all the swear words. Maybe you wonder why we store old messages.
+We store them so when a user comes later to the party, he will also gets the older messages and can read them
 
 
 ## Chatrooms
