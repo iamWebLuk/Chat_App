@@ -1,8 +1,8 @@
-const { createDbConnection, mongoose } = require("../db-connection");
+const { createDbConnection} = require("../db-connection");
 const { createMessageModel } = require("../models/message-model");
 const { createUserModel } = require("../models/user-model");
 
-createDbConnection();
+const mongoose = createDbConnection();
 
 createMessageModel(mongoose)
   .deleteMany()
