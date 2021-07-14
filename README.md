@@ -105,7 +105,7 @@ The user can use the route ```/logout``` to disconnect from the chat.
 All users get messages and notifications for other users joining or leaving the chat.
 
 
-## Config File
+### Config File
 
 There are some critical configurations that should never be shown to the public or be in a repository, like passwords, keys etc..
 Always save the file locally on your computer or laptop. The .gitignore file will handle that it won't get pushed to the github repo.
