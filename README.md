@@ -21,15 +21,15 @@
 
 ### Installation/Run
 
-Before you can start the programm you need some installations.
+Before you can start the program you need some installations.
 
 You need Nodes, RabbitMQ, and MongoDB.
 
-[Node.js](https://nodejs.org/en/) \
-[RabbitMQ](https://www.rabbitmq.com/download.html) \
+[Node.js](https://nodejs.org/en/)
+[RabbitMQ](https://www.rabbitmq.com/download.html)
 [MongoDB](https://www.mongodb.com)
 
-You can install all the applications manuelly or via Node Package Manager(npm) in the terminal
+You can install all the applications manually or via Node Package Manager(npm) in the terminal
 
 To check if Node is correct installed, type
 
@@ -37,7 +37,7 @@ To check if Node is correct installed, type
 node -v
 ```
 
-to check if Node Package Manager(npm) correct installed, type
+to check if Node Package Manager(npm) is correctly installed, type
 
 ```
 npm -v
@@ -49,18 +49,18 @@ Get MongoDB via npm with:
 npm i mongoose
 ```
 
-To get RabbitMQ there are multiple ways depence on your system. 
+To get RabbitMQ there are multiple ways dependent on your system.
  
 [Windows](https://www.rabbitmq.com/install-windows.html) \
 [Mac (Homebrew)](https://www.rabbitmq.com/install-homebrew.html) \
 [Linux](https://www.rabbitmq.com/install-debian.html)
 
-For Windows, I can recommend this video. It's  short and is on point. \
+For Windows, I can recommend this video. It's  short and on point. \
 [Windows Youtube](https://www.youtube.com/watch?v=V9DWKbalbWQ)
 
 To see if RabbitMQ is installed and running go to ```http://localhost:15672``` and ist should open a RabbitMQ Page.
 
-As last step ```create a folder called config and in this folder put the config file```, you've got.
+As last step ```create a folder called config and in this folder put the config file```
 
 When everything is correctly installed you are now ready to start the project.
 
@@ -73,12 +73,12 @@ Instead of starting your node server with npm start server.js just say:
     npm run start
    ```
 
-With this command nodemon will observe your files and whenever something changes, it will gets automatically updated on your live server.
+With this command nodemon will observe your files and whenever something changes, it will automatically restart the live server.
    ```
    npm run dev
    ```
    
-This command is to start the jtests
+This command is to start the tests
   ```
   npm run test
   ```
@@ -87,7 +87,7 @@ This command is to start the jtests
  
 <br><br>
 
-Is everything done correctly you can use ```npm run start``` in the terminal and get this message:
+If everything is done correctly you can use ```npm run start``` in the terminal and get this message:
 
 ![Verbindung](/media/verbindung.png)
 
@@ -107,14 +107,14 @@ All users get messages and notifications for other users joining or leaving the 
 
 ## Config File
 
-There are some critical configurations that are never should be shown to the public and be in a repository, like as passwords, keys etc.. \
-Allways save the file local on your computer or laptop and put it manuell into it. The .gitignore file will handle it, that it won't get pushed into the github repo.
-When you clone our repository, create a folder called config and in this folder put the config file. 
+There are some critical configurations that should never be shown to the public or be in a repository, like passwords, keys etc..
+Always save the file locally on your computer or laptop. The .gitignore file will handle that it won't get pushed to the github repo.
+When you clone the repository, create a folder called config and in this folder put the config file.
 
 ## Imports
 
-In our project there are a lot of imports. Here's a short explanation to every import for better understanding and why we added it \
-I will skip the imports we did from methods from other classes of this project \
+In our project there are a lot of imports. Here's a short explanation to every import for better understanding and also the reason we added it
+
 Flash is for rendering messages from the browser, for instance  to display when you entered a wrong password
 ```
 const flash = require("express-flash");
@@ -163,49 +163,48 @@ const io = require("socket.io")(http);
 npm test
 ```
 
-The tests were written with jtest.
+The tests were written with jest.
 
-At first we had some standard tests from socket.io [documentation](https://socket.io/docs/v4/testing/).
+At first we had some standard tests from the socket.io [documentation](https://socket.io/docs/v4/testing/).
 The tests provide only simple connection and message testing without the use of rabbitmq.
 For functional testing two different browsers or incognito mode can be used.
 
-Then we started to write our own tests, but hadn't enough time to do this well. This isn't and shouldn't be never an excuse, because testing is a major part of software engineering. Some of our tests include the login, register, logout and so on. If we had more time, we could have done better or more tests.
+Then we started to write some tests for the GET paths of the authorization, but didn't have enough time to do this well. This isn't and shouldn't be an excuse, because testing is a major part of software engineering. Some of our tests include the login, register, logout and so on. If we had more time, we could have done better or more tests.
 
 
 ### RabbitMQ
 
 The application uses Message Queuing for the communication between the users.
-We decided to use this Message Broker because, it was part of our Course at the University and is state-of-the-art
-The protocol is AMQP and we used an exchange that serve two queues with messages. The first queue is for filtered messages
-and the second for unfiltered messages.
+We decided to use this Message Broker because it was part of our course at the University and it's state-of-the-art.
+The protocol is AMQP and we used an exchange that serves two queues with messages. The first queue is for unfiltered messages
+and the second for filtered messages.
 
 ![MQ](/media/mq.png) \
 &copy; Harald Schwab
 <br><br><br>
-Whenever a user is writing a message(producer), the message broker queues it into the message queue and then all the user in the same queue (consumers) are getting the messages one by one 
+Whenever a user is writing a message (producer), the message broker queues it into the message queue and then all the users in the same queue (consumers) are getting the messages one by one.
 
-The Homepage of RabbitMQ has a good documentation about the functionality with graphics so take a look at it \
+The Homepage of RabbitMQ has a good documentation about the functionality with graphics so take a look at it
 [Documentation](https://www.rabbitmq.com/getstarted.html)
 
 
 ### Websocket
  
-  In this project we used websocket for the Chat. Because websocket is used for a two-way connection between the client and the server(bi-directional). So client and Server can send Messages beetwen each other. The connection will be open as long, as one of these two drops off. \
- For this, we used the Javascript library Socket.io which is build for bi-directional communication between client and server.
- You can see the implementation of websockets in the chat per se. When a user connects or disconnect you get a message or on the top right side, you see all the current user.
+  In this project we used websocket for the chat because websockets enable two-way connections between client and server. So client and server can send messages between each other.
+ For this, we used the javascript library socket.io which is built for bi-directional communication between client and server.
+ You can see the implementation of websockets in the chat per se. When a user connects or disconnects you get a message and on the top right side of the chat, you see all the current users.
  
- The idea or rather the advantage of websocket is that the client doesn't have to ask the server every 5 seconds by sending a new http request if there is a new message or on the other side the server doesn't send every few seconds the new data.
+ The idea or rather the advantage of websockets is that the client doesn't have to ask the server every 5 seconds by sending a new http request if there is a new message or on the other side the server doesn't need to send new data every few seconds .
  
- <b>That is not a real time connection!</b> 
+ <b>That is not a real time connection!</b>
 
-It's like an open gateway where client and server can send data between without any or with low latency. Best example is an online browser multiplayer game with highscore list that gets an updated as soon as someone gets a new highscore.
+It's like an open gateway where client and server can send data between without any or with low latency. Best example is an online browser multiplayer game with a high score list that gets updated as soon as someone gets a new highscore.
 
 <br>
 
 ### Authorization
 
-The application has a basic html login and register window build with flash and 
-For the authorization we used ejs instead of html files. ejs stands for Embedded Javascript which means, you can use Javascript code inside your HTML file. all it needs is this syntax. <%= XYZ >
+The application has a basic html login and register window build with flash and for the authorization we used ejs instead of html files. Ejs stands for Embedded Javascript which means, you can use Javascript code inside your HTML file. All it needs is this syntax. <%= XYZ >
 
 e.g.
 Taken out of the login.ejs file
@@ -217,16 +216,14 @@ Taken out of the login.ejs file
 ```
 
 
-Its an easy way to use Javascript inside your file. 
+It's an easy way to use Javascript inside your file.
 
-First we started to store our user only locally in an array on your memory and are the array gets cleaned everytime the files get changed and you save your changes. When you don't do anything with your code, the programm runs as long as you want.
+First we started to store our users only locally in an array and the array would get wiped every time the server restarted. Then we implemented a database and saved all our users in the database.
 
-Then we implemented a database and saved all our users in the database.
-
-We used the npm module passport for this. 
+We used the npm module passport for this.
 
 <br>
-For example our function 
+For example our function
 
 ![auth](/media/auth.png)
 <br><br>
@@ -238,42 +235,43 @@ Also the password is getting hashed with this function.
 const hashedPassword = await bcrypt.hash(req.body.password, 10)
 ```
 
-All it takes is the module brcypt, which automatically hashes your password
+All it takes is the module brcypt, which automatically hashes your password.
 
-To logout and get to the login screen, simply put /logout in the url after ```localhost:3000``` 
+To logout and get to the login screen, simply put /logout in the url after ```localhost:3000```
 
 
 ### Database
 
-The database we choosed was MongoDB. It is a NoSQL database but a documentoriented, which means that you can manage JSON files in it.
+The database we chose was MongoDB. It is a NoSQL database and document oriented, which means that you can manage JSON files in it.
 
-To implement the node module in our project we had to implement it with
+To implement the node module in our project we used:
 
 ```
 const mongoose = require("mongoose");
 ```
 
-We used the database to store three type of data. Old messages, the registrated users and all the swear words. Maybe you wonder why we store old messages.
-We store them so when a user comes later to the party, he will also gets the older messages and can read them
+We used the database to store three types of data. Old messages, the registrated users and all the swear words. Maybe you wonder why we store old messages.
+We store them so when a user comes later to the room, the user will also gets the older messages and can read them.
 
 
 ## Chatrooms
 
-After the login you come to a new window, where you can set your own chatroom.
+After the login you come to a new window, where you can set your own chat room.
 
 ![chooseRoom.png](/media/chooseRoom.png)
 
-When you accidental choose the wrong room, you can easily change room via URL.
-To change the chatroom via URL, change ```.../room=X``` to ```.../room=Y``` The X and Y in this example is a number or a word e.g. You want to switch from room 5 to room panda change ```room=5``` to  ```room=panda``` \
-Like we said before, you can see all the older chat messages in a room, when other people already have written something in this chat. \
+When you accidentally choose the wrong room, you can easily change it via URL.
+To change the chat room via URL, change ```.../room=X``` to ```.../room=Y``` The X and Y in this example is a number or a word e.g. You want to switch from room 5 to room panda change ```room=5``` to  ```room=panda``` \
+Like we said before, you can see all the older chat messages other people have already written in this chat.
 When you want to disconnect from the server, simply put /logout behind localhost:3000 like ->```localhost:3000/logout```
 
 
 ## Swearfilter
 
-We implemented a filter for some adult words. Whenever you say one of this 9 bad words, it gets replaced by ****
-The blueprint gets implemented in the ```swearword-model.js```, the list of bad words is in the ```initialize-filter.js``` and the function in the ```db-controller.js```
+We implemented a filter for some adult words. Whenever you say one of this 9 bad words, it gets replaced by a correct amount of * characters.
+The model is implemented in  ```swearword-model.js```, the list of bad words is in the ```initialize-filter.js``` and the function in the ```db-controller.js```
 
 ## Known Issues
 
-A too fast login after starting the program can cause an error. This can be eliminated by refresh the page.
+When the login happens briefly after the server starts, there seems to be a problem with the initialization of passport. After refreshing the application works normally.
+
