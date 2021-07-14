@@ -199,7 +199,6 @@ The Homepage of RabbitMQ has a good documentation about the functionality with g
  <b>That is not a real time connection!</b>
 
 It's like an open gateway where client and server can send data between without any or with low latency. Best example is an online browser multiplayer game with a high score list that gets updated as soon as someone gets a new highscore.
-
 <br>
 
 ### Authorization
