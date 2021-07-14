@@ -175,7 +175,7 @@ We decided to use this Message Broker because, it was part of our Course at the 
 The protocol is AMQP and we used an exchange that serve two queues with messages. The first queue is for filtered messages
 and the second for unfiltered messages.
 
-![MQ](mq.png)
+![MQ](/media/mq.png)
 
 Whenever a user is writing a message(producer), the message broker queues it into the message queue and then all the user in the same queue (consumers) are getting the messages one by one 
 
