@@ -228,18 +228,8 @@ We used the npm module passport for this.
 <br>
 For example our function 
 
-```
- const checkIsAuthenticated = (check) => {
-    return (req, res, callback) => {
-      if (check == true && req.isAuthenticated() == false) {
-        return res.redirect("/login");
-      }
-
-      if (check == false && req.isAuthenticated() == true) {
-        return res.redirect("/chat");
-      }
-
-```
+![auth](/media/auth.png)
+<br><br>
 checks if the user is authenticated, if yes you get redirected to the chat, if not you will stay at the login screen.
 
 Also the password is getting hashed with this function.
