@@ -1,5 +1,9 @@
 # ChatApp - A Group Project for the Course Web Service Development SS21
-David Riegler-Ulrike Ozim-Lukas Weber
+
+### Authors
+* [David Riegler](https://github.com/RegalFenster)
+* [Ulrike Ozim](https://github.com/UlrikeOzim)
+* [Lukas Weber](https://github.com/iamWebLuk)
 
 ## Overview
 
@@ -54,7 +58,7 @@ To get RabbitMQ there are multiple ways depence on your system.
 For Windows, I can recommend this video. It's  short and is on point. \
 [Windows Youtube](https://www.youtube.com/watch?v=V9DWKbalbWQ)
 
-To see if RabbitMQ is installed and running go to ```http://localhost:15672``` and ist should open a RabbitMQ Page. \
+To see if RabbitMQ is installed and running go to ```http://localhost:15672``` and ist should open a RabbitMQ Page.
 
 As last step ```create a folder called config and in this folder put the config file```, you've got.
 
@@ -175,8 +179,9 @@ We decided to use this Message Broker because, it was part of our Course at the 
 The protocol is AMQP and we used an exchange that serve two queues with messages. The first queue is for filtered messages
 and the second for unfiltered messages.
 
-![MQ](/media/mq.png)
-
+![MQ](/media/mq.png) \
+&copy; Harald Schwab
+<br><br><br>
 Whenever a user is writing a message(producer), the message broker queues it into the message queue and then all the user in the same queue (consumers) are getting the messages one by one 
 
 The Homepage of RabbitMQ has a good documentation about the functionality with graphics so take a look at it \
@@ -187,7 +192,15 @@ The Homepage of RabbitMQ has a good documentation about the functionality with g
  
   In this project we used websocket for the Chat. Because websocket is used for a two-way connection between the client and the server(bi-directional). So client and Server can send Messages beetwen each other. The connection will be open as long, as one of these two drops off. \
  For this, we used the Javascript library Socket.io which is build for bi-directional communication between client and server.
+ You can see the implementation of websockets in the chat per se. When a user connects or disconnect you get a message or on the top right side, you see all the current user.
+ 
+ The idea or rather the advantage of websocket is that the client doesn't have to ask the server every 5 seconds by sending a new http request if there is a new message or on the other side the server doesn't send every few seconds the new data.
+ 
+ <b>That is not a real time connection!</b> 
 
+It's like an open gateway where client and server can send data between without any or with low latency. Best example is an online browser multiplayer game with highscore list that gets an updated as soon as someone gets a new highscore.
+
+<br>
 
 ### Authorization
 
@@ -210,6 +223,24 @@ First we started to store our user only locally in an array on your memory and a
 
 Then we implemented a database and saved all our users in the database.
 
+We used the npm module passport for this. 
+
+<br>
+For example our function 
+
+```
+ const checkIsAuthenticated = (check) => {
+    return (req, res, callback) => {
+      if (check == true && req.isAuthenticated() == false) {
+        return res.redirect("/login");
+      }
+
+      if (check == false && req.isAuthenticated() == true) {
+        return res.redirect("/chat");
+      }
+
+```
+checks if the user is authenticated, if yes you get redirected to the chat, if not you will stay at the login screen.
 
 Also the password is getting hashed with this function.
 
@@ -219,7 +250,7 @@ const hashedPassword = await bcrypt.hash(req.body.password, 10)
 
 All it takes is the module brcypt, which automatically hashes your password
 
-To logout and get to the login screen, simply put /logout in the url after localhost:3000. 
+To logout and get to the login screen, simply put /logout in the url after ```localhost:3000``` 
 
 
 ### Database
@@ -245,7 +276,7 @@ After the login you come to a new window, where you can set your own chatroom.
 When you accidental choose the wrong room, you can easily change room via URL.
 To change the chatroom via URL, change ```.../room=X``` to ```.../room=Y``` The X and Y in this example is a number or a word e.g. You want to switch from room 5 to room panda change ```room=5``` to  ```room=panda``` \
 Like we said before, you can see all the older chat messages in a room, when other people already have written something in this chat. \
-When you want to disconnect from the server, simply put /logout behind the localhost:300 ```http://localhost:3000/logout```
+When you want to disconnect from the server, simply put /logout behind localhost:3000 like ->```localhost:3000/logout```
 
 
 ## Swearfilter
@@ -255,4 +286,4 @@ The blueprint gets implemented in the ```swearword-model.js```, the list of bad 
 
 ## Known Issues
 
-A too fast login after starting the program can cause an error. This can be eliminated by refresh the page. If you refresh your page in the chat, the client gets a disconnect and get a new connect afterwards. We tried ```var socket = io({ reconnection: false });``` but it doesn't seems to work
+A too fast login after starting the program can cause an error. This can be eliminated by refresh the page.
