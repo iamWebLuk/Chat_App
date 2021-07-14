@@ -55,6 +55,9 @@ For Windows, I can recommend this video. It's  short and is on point. \
 [Windows Youtube](https://www.youtube.com/watch?v=V9DWKbalbWQ)
 
 To see if RabbitMQ is installed and running go to ```http://localhost:15672``` and ist should open a RabbitMQ Page. \
+
+As last step ```create a folder called config and in this folder put the config file```, you've got.
+
 When everything is correctly installed you are now ready to start the project.
 
 In the package.json file you have different scripts to start certain parts of the programm
@@ -76,8 +79,10 @@ This command is to start the jtests
   npm run test
   ```
 
+
  
 <br><br>
+
 Is everything done correctly you can use ```npm run start``` in the terminal and get this message:
 
 ![Verbindung](/media/verbindung.png)
@@ -86,6 +91,7 @@ Is everything done correctly you can use ```npm run start``` in the terminal and
 ### Description
 
 This application is a simple example for a chat program using express, socket.io, authorization, database and rabbitmq.
+Our project is running on ```localhost:3000```
 
 The user can log in via register the email and login with it.
 The user can set or join a room.
