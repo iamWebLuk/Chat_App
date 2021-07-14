@@ -2,7 +2,7 @@ const app = require("express")();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const { SERVER_PORT } = require("../config/config");
-const { consumeFilteredMessage, publishUnfilteredMessage, consumeUnfilteredMessage } = require("./amqp");
+const {consumeFilteredMessage, publishUnfilteredMessage, consumeUnfilteredMessage } = require("./amqp");
 const { createApp } = require("../authentication/app");
 const { createDbConnection } = require("../database/db-connection");
 const { createMessage } = require("../database/db-controller");
@@ -24,7 +24,7 @@ io.on("connection", (socket) => {
 
   socket.on("message", (message) => {
     console.log("Message: " + JSON.stringify(message));
-    publishUnfilteredMessage(message)
+    publishUnfilteredMessage(message);
   });
 
   socket.on("newUser", (data) => {
@@ -39,13 +39,13 @@ io.on("connection", (socket) => {
       if (user.user == socket.userId) {
         isNewUser = false;
         if (user.room != data.room) {
-          let oldRoom = user.room
+          let oldRoom = user.room;
           io.to(oldRoom).emit("removeUser", user);
           io.to(data.room).emit("newUser", user);
-          user.room = data.room
+          user.room = data.room;
           emitUsers(oldRoom);
         }
-        return
+        return;
       }
     });
 
@@ -59,11 +59,10 @@ io.on("connection", (socket) => {
 });
 
 function emitUsers(room) {
-  io.to(room)
-    .emit("roomUsers", {
-      room: room,
-      users: JSON.stringify(Array.from(activeUsers)),
-    });
+  io.to(room).emit("roomUsers", {
+    room: room,
+    users: JSON.stringify(Array.from(activeUsers)),
+  });
 }
 
 function emitMessage(payload) {
@@ -72,7 +71,6 @@ function emitMessage(payload) {
 }
 
 function disconnectUser(userName) {
-  console.log("test")
   activeUsers.forEach((user) => {
     if (user.user == userName) {
       let room = user.room;
