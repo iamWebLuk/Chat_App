@@ -14,7 +14,7 @@ const {
 } = require("../database/db-controller");
 const users = [];
 
-function createApp(app) {
+function createApp(app, disconnectUser) {
   getUsers()
     .then((usersInDatabase) => {
       usersInDatabase.forEach((element) => {
@@ -34,7 +34,7 @@ function createApp(app) {
         (id) => users.find((user) => user.id === id)
       );
     })
-    .catch((err) => reject(err));
+    .catch((err) => console.log(err));
 
   app.set("view-engine", "ejs");
   app.use(express.urlencoded({ extended: false }));
@@ -123,6 +123,7 @@ function createApp(app) {
   });
 
   app.get("/logout", (req, res) => {
+    disconnectUser(req.user.name)
     req.logOut();
     res.redirect("/login");
   });

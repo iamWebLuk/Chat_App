@@ -2,7 +2,7 @@ const app = require("express")();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const { SERVER_PORT } = require("../config/config");
-const {consumeFilteredMessage, publishUnfilteredMessage, consumeUnfilteredMessage } = require("./amqp");
+const { consumeFilteredMessage, publishUnfilteredMessage, consumeUnfilteredMessage } = require("./amqp");
 const { createApp } = require("../authentication/app");
 const { createDbConnection } = require("../database/db-connection");
 const { createMessage } = require("../database/db-controller");
@@ -13,7 +13,7 @@ http.listen(SERVER_PORT, () => {
   console.log("Server is running on Port: " + SERVER_PORT);
 });
 
-createApp(app);
+createApp(app, disconnectUser);
 
 createDbConnection();
 
@@ -24,7 +24,7 @@ io.on("connection", (socket) => {
 
   socket.on("message", (message) => {
     console.log("Message: " + JSON.stringify(message));
-    publishUnfilteredMessage(message);
+    publishUnfilteredMessage(message)
   });
 
   socket.on("newUser", (data) => {
@@ -38,27 +38,23 @@ io.on("connection", (socket) => {
     activeUsers.forEach((user) => {
       if (user.user == socket.userId) {
         isNewUser = false;
-        return;
+        if (user.room != data.room) {
+          let oldRoom = user.room
+          io.to(oldRoom).emit("removeUser", user);
+          io.to(data.room).emit("newUser", user);
+          user.room = data.room
+          emitUsers(oldRoom);
+        }
+        return
       }
     });
 
     if (isNewUser == true) {
-      activeUsers.add(user);
       io.to(user.room).emit("newUser", user);
-      emitUsers(user.room);
+      activeUsers.add(user);
     }
-  });
 
-  socket.on("disconnect", () => {
-    let room = "";
-    activeUsers.forEach((user) => {
-      if (user.user == socket.userId) {
-        room = user.room;
-        activeUsers.delete(user);
-        io.to(room).emit("removeUser", user);
-        emitUsers(room);
-      }
-    });
+    emitUsers(user.room);
   });
 });
 
@@ -73,6 +69,18 @@ function emitUsers(room) {
 function emitMessage(payload) {
   createMessage(payload);
   io.to(payload.room).emit("message", payload.user + ": " + payload.message);
+}
+
+function disconnectUser(userName) {
+  console.log("test")
+  activeUsers.forEach((user) => {
+    if (user.user == userName) {
+      let room = user.room;
+      activeUsers.delete(user);
+      io.to(user.room).emit("removeUser", user);
+      emitUsers(room);
+    }
+  });
 }
 
 consumeUnfilteredMessage();
