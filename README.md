@@ -111,7 +111,7 @@ There are some critical configurations that should never be shown to the public 
 Always save the file locally on your computer or laptop. The .gitignore file will handle that it won't get pushed to the github repo.
 When you clone the repository, create a folder called config and in this folder put the config file.
 
-## Imports
+### Imports
 
 In our project there are a lot of imports. Here's a short explanation to every import for better understanding and also the reason we added it
 
@@ -254,7 +254,7 @@ We used the database to store three types of data. Old messages, the registrated
 We store them so when a user comes later to the room, the user will also gets the older messages and can read them.
 
 
-## Chatrooms
+### Chatrooms
 
 After the login you come to a new window, where you can set your own chat room.
 
@@ -266,12 +266,12 @@ Like we said before, you can see all the older chat messages other people have a
 When you want to disconnect from the server, simply put /logout behind localhost:3000 like ->```localhost:3000/logout```
 
 
-## Swearfilter
+### Swear word filter
 
 We implemented a filter for some adult words. Whenever you say one of this 9 bad words, it gets replaced by a correct amount of * characters.
 The model is implemented in  ```swearword-model.js```, the list of bad words is in the ```initialize-filter.js``` and the function in the ```db-controller.js```
 
-## Known Issues
+### Known Issues
 
 When the login happens briefly after the server starts, there seems to be a problem with the initialization of passport. After refreshing the application works normally.
 
