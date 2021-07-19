@@ -1,7 +1,6 @@
 const amqp = require("amqplib/callback_api");
 const {
   RABBIT_HOST,
-  QUEUE,
   EXCHANGE,
   UNFILTEREDKEY,
   UNFILTEREDQUEUE,
@@ -72,7 +71,7 @@ function consumeUnfilteredMessage() {
       channel.bindQueue(UNFILTEREDQUEUE, EXCHANGE, UNFILTEREDKEY);
 
       channel.consume(
-        QUEUE,
+        UNFILTEREDQUEUE,
         (payload) => {
           payload = JSON.parse(payload.content);
           console.log(
@@ -114,7 +113,7 @@ function consumeFilteredMessage(emit) {
       channel.bindQueue(FILTEREDQUEUE, EXCHANGE, FILTEREDKEY);
 
       channel.consume(
-        QUEUE,
+        FILTEREDQUEUE,
         (payload) => {
           payload = JSON.parse(payload.content);
           console.log(

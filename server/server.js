@@ -73,10 +73,9 @@ function emitMessage(payload) {
 function disconnectUser(userName) {
   activeUsers.forEach((user) => {
     if (user.user == userName) {
-      let room = user.room;
       activeUsers.delete(user);
       io.to(user.room).emit("removeUser", user);
-      emitUsers(room);
+      emitUsers(user.room);
     }
   });
 }
